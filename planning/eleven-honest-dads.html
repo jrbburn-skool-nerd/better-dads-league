@@ -1,0 +1,689 @@
+<title>Eleven Honest Dads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&display=swap">
+<style>
+  :root{
+    --ground:#eceeeb;
+    --surface:#f5f6f4;
+    --ink:#1b2021;
+    --muted:#5f6a68;
+    --faint:#8a9391;
+    --rule:#d2d8d3;
+    --accent:#2f6f62;
+    --signal:#a26a1f;
+    --signal-wash:#f0e6d6;
+    --panel-ink:#f2f4f1;
+    --panel-ground:#22302c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#14181a;
+      --surface:#1b2124;
+      --ink:#e4e9e6;
+      --muted:#95a19d;
+      --faint:#6e7a78;
+      --rule:#2a3235;
+      --accent:#74b8a7;
+      --signal:#d9a05b;
+      --signal-wash:#2c2519;
+      --panel-ink:#e9efec;
+      --panel-ground:#1f2b28;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#14181a;
+    --surface:#1b2124;
+    --ink:#e4e9e6;
+    --muted:#95a19d;
+    --faint:#6e7a78;
+    --rule:#2a3235;
+    --accent:#74b8a7;
+    --signal:#d9a05b;
+    --signal-wash:#2c2519;
+    --panel-ink:#e9efec;
+    --panel-ground:#1f2b28;
+  }
+
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Source Sans 3","Helvetica Neue",Arial,sans-serif;
+    font-size:17px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:46rem;
+    margin:0 auto;
+    padding:clamp(2.2rem,6vw,4.5rem) clamp(1.1rem,5vw,2rem) 5rem;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(2.6rem,6vw,4rem);
+  }
+  h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;text-wrap:balance;margin:0;}
+  p{margin:0;}
+
+  .eyebrow{
+    font-size:.7rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+  }
+
+  /* ---- masthead ---- */
+  .masthead{display:flex;flex-direction:column;gap:1rem;}
+  .masthead h1{
+    font-size:clamp(2.3rem,7.5vw,3.4rem);
+    font-weight:700;
+    line-height:1.06;
+    letter-spacing:-.015em;
+  }
+  .standfirst{
+    font-size:1.13rem;
+    color:var(--muted);
+    max-width:34rem;
+  }
+  .standfirst strong{color:var(--ink);font-weight:600;}
+  .masthead .rule{height:3px;background:var(--accent);width:3.5rem;border-radius:2px;}
+
+  /* ---- generic section ---- */
+  .section{display:flex;flex-direction:column;gap:1.5rem;}
+  .section > h2{
+    font-size:1.55rem;
+    font-weight:600;
+    letter-spacing:-.01em;
+    padding-bottom:.6rem;
+    border-bottom:1px solid var(--rule);
+  }
+  .lede{color:var(--muted);max-width:36rem;}
+
+  /* ---- findings ---- */
+  .findings{display:flex;flex-direction:column;gap:1.4rem;list-style:none;padding:0;margin:0;}
+  .finding{
+    background:var(--surface);
+    border:1px solid var(--rule);
+    border-radius:3px;
+    padding:1.15rem 1.3rem 1.3rem;
+    display:flex;
+    flex-direction:column;
+    gap:.6rem;
+  }
+  .finding-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+  .finding-head h3{
+    font-size:1.16rem;
+    font-weight:600;
+    flex:1 1 16rem;
+  }
+  .chip{
+    font-size:.68rem;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    border-radius:2px;
+    padding:.16rem .5rem;
+    white-space:nowrap;
+  }
+  .finding p{color:var(--muted);}
+  .finding p strong{color:var(--ink);font-weight:600;}
+
+  q, .said{
+    font-family:"Newsreader",Georgia,serif;
+    font-style:italic;
+    font-size:1.03em;
+    color:var(--ink);
+  }
+  q{quotes:"\201C" "\201D";}
+
+  /* ---- voices block ---- */
+  .voices{
+    display:flex;
+    flex-direction:column;
+    gap:.55rem;
+    border-left:2px solid var(--rule);
+    padding-left:1.1rem;
+  }
+  .voices .said{color:var(--muted);}
+
+  /* ---- the first win panel ---- */
+  .win{
+    background:var(--panel-ground);
+    color:var(--panel-ink);
+    border-radius:4px;
+    padding:clamp(1.6rem,5vw,2.4rem);
+    display:flex;
+    flex-direction:column;
+    gap:1.1rem;
+  }
+  .win .eyebrow{color:var(--signal);}
+  .win h2{
+    font-size:clamp(1.4rem,4.4vw,1.9rem);
+    font-weight:600;
+    line-height:1.3;
+    border:0;
+    padding:0;
+  }
+  .win h2 em{font-style:normal;color:var(--signal);}
+  .win p{color:#b9c6c1;}
+  .win .not{
+    font-size:.95rem;
+    display:flex;
+    flex-wrap:wrap;
+    gap:.4rem .9rem;
+    color:#8fa09a;
+  }
+  .win .not span{white-space:nowrap;}
+
+  .tiers{display:flex;flex-direction:column;gap:.5rem;border-top:1px solid rgba(255,255,255,.12);padding-top:1rem;}
+  .tier{display:grid;grid-template-columns:6.4rem 1fr;gap:.9rem;align-items:baseline;}
+  .tier .when{
+    font-family:"Zilla Slab",Georgia,serif;
+    font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--signal);
+  }
+  .tier .what{color:#c3cfca;font-size:.97rem;}
+  @media (max-width:520px){.tier{grid-template-columns:1fr;gap:.1rem;}}
+
+  /* ---- timeline ---- */
+  .days{display:flex;flex-direction:column;list-style:none;padding:0;margin:0;}
+  .day{
+    display:grid;
+    grid-template-columns:4.4rem 1fr;
+    gap:0 1.1rem;
+    padding:0 0 1.5rem;
+    position:relative;
+  }
+  .day::before{
+    content:"";
+    position:absolute;
+    left:1.55rem;
+    top:1.5rem;
+    bottom:0;
+    width:1px;
+    background:var(--rule);
+  }
+  .day:last-child::before{display:none;}
+  .day-mark{
+    font-family:"Zilla Slab",Georgia,serif;
+    font-size:.74rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent);
+    border:1px solid var(--rule);
+    background:var(--surface);
+    border-radius:2px;
+    padding:.2rem 0;
+    text-align:center;
+    height:fit-content;
+    line-height:1.3;
+  }
+  .day-body{display:flex;flex-direction:column;gap:.45rem;}
+  .day-body h3{font-size:1.1rem;font-weight:600;}
+  .day-body p{color:var(--muted);}
+  .day.pivot .day-mark{
+    color:var(--signal);
+    border-color:var(--signal);
+    background:var(--signal-wash);
+  }
+  .day.pivot .day-body h3{color:var(--signal);}
+
+  /* ---- log block ---- */
+  .kit{display:flex;flex-direction:column;gap:1rem;list-style:none;padding:0;margin:0;}
+  .kit li{
+    display:grid;grid-template-columns:8.2rem 1fr;gap:.35rem 1.1rem;
+    padding-bottom:1rem;border-bottom:1px solid var(--rule);
+  }
+  .kit li:last-child{border-bottom:0;padding-bottom:0;}
+  .kit .term{
+    font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1rem;color:var(--accent);
+  }
+  .kit .def{color:var(--muted);}
+  .kit .def strong{color:var(--ink);font-weight:600;}
+  @media (max-width:560px){.kit li{grid-template-columns:1fr;gap:.15rem;}}
+
+  .comms{display:flex;flex-direction:column;list-style:none;padding:0;margin:0;}
+  .comms li{
+    display:grid;grid-template-columns:4.4rem 1fr;gap:.35rem 1.1rem;
+    padding:.95rem 0;border-bottom:1px solid var(--rule);
+  }
+  .comms li:last-child{border-bottom:0;}
+  .comms .mark{
+    font-family:"Zilla Slab",Georgia,serif;font-size:.74rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;font-variant-numeric:tabular-nums;
+    color:var(--accent);border:1px solid var(--rule);background:var(--surface);
+    border-radius:2px;padding:.2rem 0;text-align:center;height:fit-content;
+  }
+  .comms .line{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;}
+  .comms .who{font-weight:600;color:var(--ink);}
+  .comms .note{grid-column:2;color:var(--muted);font-size:.96rem;}
+  .comms li.quiet .mark{color:var(--faint);}
+  .comms li.key .mark{color:var(--signal);border-color:var(--signal);background:var(--signal-wash);}
+  @media (max-width:520px){
+    .comms li{grid-template-columns:1fr;}
+    .comms .mark{width:4.4rem;}
+    .comms .note{grid-column:1;}
+  }
+
+  .claims{display:flex;flex-direction:column;gap:.9rem;list-style:none;padding:0;margin:0;}
+  .claims li{
+    display:grid;grid-template-columns:1fr auto;gap:.25rem .9rem;align-items:baseline;
+    padding-bottom:.85rem;border-bottom:1px solid var(--rule);
+  }
+  .claims li:last-child{border-bottom:0;padding-bottom:0;}
+  .claims .claim{font-weight:600;color:var(--ink);}
+  .claims .why{grid-column:1 / -1;color:var(--muted);font-size:.95rem;}
+  .chip.warn{color:var(--signal);border-color:var(--signal);}
+  .chip.off{color:var(--faint);border-color:var(--rule);}
+  .src{font-size:.88rem;color:var(--faint);}
+  .src a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule);}
+  .src a:hover{border-bottom-color:var(--accent);}
+
+  .gap{
+    border:1px solid var(--signal);
+    background:var(--signal-wash);
+    border-radius:3px;
+    padding:1.15rem 1.3rem 1.3rem;
+    display:flex;flex-direction:column;gap:.6rem;
+  }
+  .gap .eyebrow{color:var(--signal);}
+  .gap h3{font-family:"Zilla Slab",Georgia,serif;font-size:1.16rem;font-weight:600;}
+  .gap p{color:var(--muted);}
+  .gap .fix{
+    font-family:"Zilla Slab",Georgia,serif;font-size:1.1rem;font-weight:600;color:var(--ink);
+    border-left:3px solid var(--signal);padding-left:.85rem;
+  }
+
+  /* ---- checklist ---- */
+  .checks{display:flex;flex-direction:column;gap:.85rem;list-style:none;padding:0;margin:0;}
+  .checks li{
+    position:relative;
+    padding-left:1.9rem;
+    color:var(--muted);
+  }
+  .checks li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:.55rem;
+    width:.62rem;height:.62rem;
+    border:2px solid var(--accent);
+    border-radius:1px;
+  }
+  .checks strong{color:var(--ink);font-weight:600;}
+
+  /* ---- people ---- */
+  .people{display:flex;flex-direction:column;gap:1.05rem;list-style:none;padding:0;margin:0;}
+  .person{display:flex;flex-direction:column;gap:.2rem;}
+  .person .who{font-weight:700;color:var(--ink);}
+  .person p{color:var(--muted);}
+
+  /* ---- limits ---- */
+  .limits{
+    border-top:1px solid var(--rule);
+    padding-top:1.4rem;
+    display:flex;
+    flex-direction:column;
+    gap:.7rem;
+  }
+  .limits h2{font-size:1rem;font-weight:600;letter-spacing:.02em;border:0;padding:0;}
+  .limits p{color:var(--faint);font-size:.95rem;max-width:36rem;}
+
+  @media (max-width:520px){
+    .day{grid-template-columns:1fr;gap:.5rem;}
+    .day::before{display:none;}
+    .day-mark{width:4.4rem;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    a{transition:color .15s ease;}
+  }
+  a{color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="rule"></div>
+    <p class="eyebrow">Better Dads League &middot; Week One</p>
+    <h1>Eleven honest dads</h1>
+    <p class="standfirst">You sent four questions to dads who had already been in the community <strong>for months</strong> &mdash; and every one of them answered. Several at length. One about his separation and his drinking. One about feeling like a bad influence on his own kids. That response rate, out of a half-quiet room, is the finding. Here is what is actually in these replies, what the first win is, and what week one should do.</p>
+  </header>
+
+  <section class="section">
+    <h2>Six things you already won</h2>
+    <p class="lede">Counted from the eleven replies, not inferred. These went out months into each man’s membership &mdash; not at joining &mdash; which changes what they can and can’t tell you.</p>
+
+    <ul class="findings">
+
+      <li class="finding">
+        <div class="finding-head">
+          <h3>Nobody left you on read &mdash; months in, room gone quiet</h3>
+          <span class="chip">11 of 11 replied</span>
+        </div>
+        <p>Several wrote two hundred words or more. These men had been members for months, several of them barely active, and not one ignored you. A re-engagement DM into a quiet room normally comes back in single digits. <strong>Whatever is broken here, trust in you is not the broken part.</strong></p>
+      </li>
+
+      <li class="finding">
+        <div class="finding-head">
+          <h3>They told you things men don't type</h3>
+          <span class="chip">8 real disclosures</span>
+        </div>
+        <div class="voices">
+          <p class="said">Feeling like an absolute failure and like I am a bad influence on my kids.</p>
+          <p class="said">Separating from my wife and trying to not fall to the bottom of a bottle or baggie.</p>
+          <p class="said">Teens and toddlers plus no money.</p>
+          <p class="said">Shared custody.</p>
+        </div>
+        <p>One dad laid out four adopted kids from hard backgrounds: chronic lying, two children wetting themselves day and night, a little one who can't regulate, an oldest who argues and sees the worst in everything. <strong>That is not survey data. That is the raw material of your entire community, sitting in your inbox instead of your feed &mdash; and months of membership went by before anybody asked him for it.</strong></p>
+      </li>
+
+      <li class="finding">
+        <div class="finding-head">
+          <h3>You own a proven way to wake the room up</h3>
+          <span class="chip">11 of 11 &middot; months in</span>
+        </div>
+        <p>&ldquo;What's your biggest challenge as a dad right now?&rdquo; pulled a true answer out of every single man &mdash; including the one who told you the community wasn't for him. One dad named the mechanic without being asked: <q>I really like the questions that reflection and a thoughtful answer.</q> <strong>That is a re-engagement instrument that works, and most operators never find one.</strong> What it can't tell you is what a brand-new dad does, because every man here had months of history with you before he answered.</p>
+      </li>
+
+      <li class="finding">
+        <div class="finding-head">
+          <h3>Four dads volunteered &mdash; you just haven't given them a job</h3>
+          <span class="chip">4 leaning in</span>
+        </div>
+        <p>One is a motivational creator who says he wants to encourage other dads. One is building his own men's community and wrote you a free strategy memo. One asked for a member drive because <q>I feel like I'm talking to just 3-4 guys most of the time.</q> One handed you a problem list that would carry a thread for a month. <strong>They are waiting to be asked.</strong></p>
+      </li>
+
+      <li class="finding">
+        <div class="finding-head">
+          <h3>Your about page converts</h3>
+          <span class="chip">1 cold join</span>
+        </div>
+        <p>Exactly one dad came from marketing rather than from knowing you: <q>I really liked the about page and as a Dad who's had some struggles, I wanted to join a community for support and speak about things.</q> He arrived already expecting to talk. <strong>Small sample &mdash; but it is your only cold data point, and it says the page sets the right expectation.</strong></p>
+      </li>
+
+      <li class="finding">
+        <div class="finding-head">
+          <h3>Not one complaint about the content</h3>
+          <span class="chip">0 complaints</span>
+        </div>
+        <p>Every criticism was about the room being quiet, never about what's in it. <q>Move guys from consuming content into actually knowing one another.</q> <q>More opportunities for dads to share their stories and encourage each other.</q> <strong>That is a far better problem than the one you were afraid you had.</strong></p>
+      </li>
+
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>The thing you can't see from inside it</h2>
+    <p class="lede">Six of the eleven joined for <em>you</em>, not for the promise.</p>
+    <div class="voices">
+      <p class="said">Because you're the host.</p>
+      <p class="said">For no other reason than to support you.</p>
+      <p class="said">To show my gratitude for your friendship.</p>
+      <p class="said">I joined and stay to support you.</p>
+      <p class="said">I wanted to support you and your mission.</p>
+    </div>
+    <p>Your current roster is a room full of people who love James. <strong>Cold traffic will not arrive carrying that.</strong> Week one has to manufacture, deliberately, the thing your friendships currently hand you for free. That is the real reason your gut said don't buy traffic yet &mdash; and your gut was right.</p>
+  </section>
+
+  <section class="win">
+    <p class="eyebrow">The first win</p>
+    <h2>A dad logs one line &mdash; and <em>another dad Echoes it back to him, by name, inside a day.</em></h2>
+    <div class="not">
+      <span>Not &ldquo;he posts.&rdquo;</span>
+      <span>Not &ldquo;he keeps a streak.&rdquo;</span>
+      <span>Not &ldquo;he opens up on day one.&rdquo;</span>
+    </div>
+    <p>You already built this mechanic and you already named it. In the log, the Echo is a man going back to his own earlier entry and going deeper on it. In the community it is the identical move pointed outward &mdash; one dad going deeper on <em>another</em> dad's entry. <strong>You don't need a new feature. You need the Echo aimed at somebody else.</strong></p>
+    <div class="tiers">
+      <div class="tier"><span class="when">Week one</span><span class="what">He gets <strong>Echoed</strong>. One logged line, and a real man replies to it using his name.</span></div>
+      <div class="tier"><span class="when">Entry 28</span><span class="what">He gets <strong>met</strong>. The hard thing &mdash; the one your eleven took months to say.</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>You already own the spine</h2>
+    <p class="lede">T.H.I.S. Captain&rsquo;s Log isn&rsquo;t a lead magnet. Read as community architecture, it is most of week one and all of month one.</p>
+
+    <ul class="kit">
+      <li>
+        <span class="term">The Echo</span>
+        <span class="def">Return to an earlier entry and go deeper. <strong>Your best asset &mdash; and it is also the part of the original protocol that almost every gratitude app drops.</strong> Hunt the Good Stuff never stopped at three good things; it asked for a reflection too. You kept it, pulled it out, and gave it a name.</span>
+      </li>
+      <li>
+        <span class="term">No streak</span>
+        <span class="def"><q>You are not bound by calendar days.</q> <strong>Say this louder than you currently do.</strong> Every dad who ever quit a journal quit it on the day he missed one &mdash; and your men are the ones already writing to you about feeling like failures.</span>
+      </li>
+      <li>
+        <span class="term">28 entries</span>
+        <span class="def">Roughly a month. So the week-one win and the month-one win already have a track to run on, and you don&rsquo;t have to invent a curriculum for either.</span>
+      </li>
+      <li>
+        <span class="term">The lineage</span>
+        <span class="def">Seligman&rsquo;s Three Good Things &rarr; Penn Resiliency Project &rarr; <strong>&ldquo;Hunt the Good Stuff,&rdquo; Unit Two of the U.S. Army&rsquo;s Master Resilience Training.</strong> You didn&rsquo;t build near that model. You built on its field-hardened branch &mdash; the version made for people under real load.</span>
+      </li>
+      <li>
+        <span class="term">Captain</span>
+        <span class="def">The helm, the Growth Date, the Echo, Invictus at the end. <strong>You have a working vocabulary</strong> &mdash; most communities never build one, and it&rsquo;s why yours can name things without sounding like a course.</span>
+      </li>
+    </ul>
+
+    <div class="gap">
+      <p class="eyebrow">The one change worth making</p>
+      <h3>Sharpen the Echo. Leave the three gratitudes alone.</h3>
+      <p>Hunt the Good Stuff asks for the three good things <em>and</em> a reflection &mdash; what it meant, and what it did for the people around you. That reflection is where the work happens, and it is the piece most journals quietly drop. You already kept it. It just needs to ask for more than it currently does.</p>
+      <p class="fix">Echo: Return to an earlier entry. Why did that happen &mdash; and what did it do for the people around you?</p>
+      <p><strong>&ldquo;Why did that happen&rdquo;</strong> is where a man finds his own hand in it &mdash; the only honest answer to <q>feeling like an absolute failure.</q> <strong>&ldquo;What did it do for the people around you&rdquo;</strong> points him outward, and that is where Emmons found the effect that should interest you most: men keeping these journals became measurably more likely to help someone or offer emotional support. <strong>In a room whose whole problem is that nobody answers anybody, that is not a soft add-on. That is the mechanism.</strong></p>
+      <p class="src">Correction to an earlier draft of this page: it suggested trading one gratitude for &ldquo;a moment you won.&rdquo; The evidence doesn&rsquo;t support that trade &mdash; keep all three, and let the Echo carry the agency.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>What the evidence actually says</h2>
+    <p class="lede">So you can talk about the log more credibly than anyone else selling a gratitude journal &mdash; and so you know exactly where the floor is.</p>
+
+    <ul class="claims">
+      <li>
+        <span class="claim">A small but real lift in wellbeing</span>
+        <span class="chip">Solid</span>
+        <span class="why">Hedges&rsquo; g &asymp; 0.19 across 145 papers and roughly 24,800 people in 28 countries; g &asymp; 0.22 for life satisfaction, positive affect and happiness across 25 randomised trials. Small &mdash; and real.</span>
+      </li>
+      <li>
+        <span class="claim">Happier months after one week of practice</span>
+        <span class="chip">Reasonable</span>
+        <span class="why">Seligman&rsquo;s participants were happier and less depressed at one, three and six months after a single week. Replications hold up better on happiness than on depression.</span>
+      </li>
+      <li>
+        <span class="claim">Makes men more likely to support each other</span>
+        <span class="chip">Promising</span>
+        <span class="why">Emmons&rsquo; daily-journal group reported more often having helped someone with a problem or offered emotional support. <strong>This is the finding closest to your actual problem.</strong></span>
+      </li>
+      <li>
+        <span class="claim">Better sleep</span>
+        <span class="chip warn">Thin</span>
+        <span class="why">Improved in 5 of 8 studies in one review, whose own authors said more research is needed. Usable if you hedge it. Don&rsquo;t lead with it.</span>
+      </li>
+      <li>
+        <span class="claim">Blood pressure, immunity, physical health</span>
+        <span class="chip off">Don&rsquo;t claim</span>
+        <span class="why">Mixed and understudied. Keep it off the landing page &mdash; it is the fastest way to lose a sceptical dad.</span>
+      </li>
+      <li>
+        <span class="claim">Treats depression or anxiety</span>
+        <span class="chip off">Don&rsquo;t claim</span>
+        <span class="why">Effects are small and may be partly placebo. And the man who wrote to you about the bottle and the baggie needs more than a journal &mdash; your material should never imply otherwise.</span>
+      </li>
+    </ul>
+
+    <p class="lede">The honest pitch is the stronger one anyway: <strong>small, cheap, repeatable, twenty years of research behind it, and nothing to feel behind on.</strong></p>
+
+    <p class="src">Emmons &amp; McCullough (2003), <em>Counting Blessings Versus Burdens</em> &middot; Seligman et al. (2005), <em>Positive Psychology Progress</em> &middot; Cregg &amp; Cheavens (2021), <em>Journal of Happiness Studies</em> &middot; Boggiss et al. (2020), physical-health review &middot; cross-cultural meta-analysis, <em>PNAS</em>.</p>
+  </section>
+
+  <section class="section">
+    <h2>The first seven days</h2>
+    <p class="lede">He is asked for nothing until day 3, and nothing personal until day 7. His first win happens in private, before he is ever exposed. About ten minutes a day from you &mdash; and the reply that matters is not yours.</p>
+
+    <ol class="days">
+
+      <li class="day">
+        <span class="day-mark">Day 0</span>
+        <div class="day-body">
+          <h3>Give him the log. Ask him nothing.</h3>
+          <p><q>Greetings Captain.</q> He gets the tool, not a questionnaire. And say the quiet part out loud &mdash; <strong>you are not bound by calendar days</strong> &mdash; because that single line is the difference between a journal he keeps and one more thing he feels behind on.</p>
+        </div>
+      </li>
+
+      <li class="day">
+        <span class="day-mark">Day 1</span>
+        <div class="day-body">
+          <h3>His first Growth Date, entirely private</h3>
+          <p>Three lines, nobody watching, nothing to perform. The only day of the week that stays completely his &mdash; <strong>so he banks a win before he is ever exposed to the room.</strong> Tell him there is no Echo on entry one; there is nothing behind him yet to reflect on. Your log already says this. If he misses it, his very first page feels like a page he failed.</p>
+        </div>
+      </li>
+
+      <li class="day">
+        <span class="day-mark">Day 2</span>
+        <div class="day-body">
+          <h3>Let him watch the room do it first</h3>
+          <p>A live thread where dads post one line out of their own log. He reads before he writes anything. What he is quietly checking is whether men here get answered &mdash; so make sure, this week, that they do.</p>
+        </div>
+      </li>
+
+      <li class="day">
+        <span class="day-mark">Day 3</span>
+        <div class="day-body">
+          <h3>He posts one line from his log</h3>
+          <p>That's the whole ask. It isn't confession, it's gratitude &mdash; and he wrote it two days ago, so there is nothing to compose. <strong>The lowest-stakes first post a man can make, and it's still genuinely his.</strong></p>
+        </div>
+      </li>
+
+      <li class="day">
+        <span class="day-mark">Day 4</span>
+        <div class="day-body">
+          <h3>His first Echo &mdash; aimed at himself</h3>
+          <p>Teach this one properly; it is the move nobody arrives knowing. He goes back to an earlier entry and asks two things: <strong>why did that happen</strong>, and <strong>what did it do for the people around me?</strong></p>
+          <p>The first question is where he stops being a bystander to his own good week. The second turns a private practice outward. <strong>And it is the rehearsal &mdash; the exact move he will make for another dad tomorrow.</strong></p>
+        </div>
+      </li>
+
+      <li class="day pivot">
+        <span class="day-mark">Day 5</span>
+        <div class="day-body">
+          <h3>Another dad Echoes him</h3>
+          <p>The same two questions, aimed at somebody else &mdash; which is why day 4 exists: he has already practised the move on himself. Not a like. A reply that uses his name and goes deeper on what he actually wrote. Your two leaning-in dads own this one job. <strong>This is the step that decides whether he comes back.</strong></p>
+        </div>
+      </li>
+
+      <li class="day">
+        <span class="day-mark">Day 7</span>
+        <div class="day-body">
+          <h3>Now you write, one Captain to another</h3>
+          <p>Short, personal, about the thing he actually logged. Still no four questions. <q>What's your biggest challenge as a dad right now?</q> belongs around entry 28 &mdash; your own eleven replies are the proof that it needs the months first.</p>
+        </div>
+      </li>
+
+    </ol>
+  </section>
+
+  <section class="section">
+    <h2>What you actually send</h2>
+    <p class="lede">Two DMs all week &mdash; not seven. Everything else is carried by the room, the log, and one post that serves every new dad at once.</p>
+
+    <ul class="comms">
+      <li>
+        <div class="mark">Day 0</div>
+        <div class="line"><span class="chip">DM</span><span class="who">You, by hand</span></div>
+        <p class="note">The give: the log, and <q>nothing to reply to.</q></p>
+      </li>
+      <li class="quiet">
+        <div class="mark">Day 1</div>
+        <div class="line"><span class="chip off">Silence</span><span class="who">Nobody</span></div>
+        <p class="note">Deliberate. You told him yesterday there was no homework &mdash; a nudge today makes that a lie.</p>
+      </li>
+      <li class="quiet">
+        <div class="mark">Day 2</div>
+        <div class="line"><span class="chip off">The room</span><span class="who">The thread</span></div>
+        <p class="note">He is watching men get answered. Nothing from you.</p>
+      </li>
+      <li>
+        <div class="mark">Day 3</div>
+        <div class="line"><span class="chip">Public post</span><span class="who">You, once</span></div>
+        <p class="note"><q>One line from your log this week.</q> <strong>One post, whether five dads joined or fifty.</strong></p>
+      </li>
+      <li class="quiet">
+        <div class="mark">Day 4</div>
+        <div class="line"><span class="chip off">The log</span><span class="who">The page itself</span></div>
+        <p class="note">The Echo instruction is already in his hands. No message needed.</p>
+      </li>
+      <li class="key">
+        <div class="mark">Day 5</div>
+        <div class="line"><span class="chip warn">Peer reply</span><span class="who">Another dad</span></div>
+        <p class="note">The Echo &mdash; and the only notification this week he will actually feel.</p>
+      </li>
+      <li>
+        <div class="mark">Day 7</div>
+        <div class="line"><span class="chip">DM</span><span class="who">You, by hand</span></div>
+        <p class="note">Personal, about the thing he actually posted.</p>
+      </li>
+    </ul>
+
+    <div class="gap">
+      <p class="eyebrow">The rule this is built on</p>
+      <h3>Per-dad messages don&rsquo;t scale. Per-week posts do.</h3>
+      <p>A six-DM onboarding times every new dad breaks at exactly the moment traffic starts working. Day 3 is the opposite: one thread that costs the same at fifty dads as at five. <strong>It is the only thing in the week that gets cheaper as you grow.</strong></p>
+      <p>And do not automate the two DMs. Your eleven answered <em>because</em> those messages were personal and hand-sent &mdash; automate them and you destroy the asset the whole plan rests on. Skool suspends accounts for bulk messaging besides.</p>
+    </div>
+
+    <ul class="checks">
+      <li><strong>If he hasn&rsquo;t posted by day 7</strong>, the last DM becomes a short no-ask note &mdash; never <q>I noticed you haven&rsquo;t been active.</q> That is the exact sentence that makes a man feel behind, and your whole promise is the opposite.</li>
+      <li><strong>If cold traffic lands on your email list first</strong>, days 1&ndash;6 move to email, where scheduling them is fair game and you have already advertised the cadence: <q>short, practical nudges you can actually use tonight.</q> The shape stays identical &mdash; give, silence, one public prompt, a peer reply, then a personal note.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Before you spend a dollar on traffic</h2>
+    <ul class="checks">
+      <li><strong>Point traffic at the about page, not the feed.</strong> It is the only on-ramp you have evidence for, and the one dad who used it arrived expecting to talk.</li>
+      <li><strong>Week one has to work for a dad who has never heard of you.</strong> Right now it quietly depends on him being your friend.</li>
+      <li><strong>Don't add content. Add answering.</strong> Every dad who gave feedback asked for the second thing. Not one asked for the first.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Three conversations this week</h2>
+    <ul class="people">
+      <li class="person">
+        <span class="who">The community builder</span>
+        <p>Ask him to co-run the welcome. He already wrote you the strategy for free, and he believes the thing you need him to believe: relationship and accountability change a man, information doesn't.</p>
+      </li>
+      <li class="person">
+        <span class="who">The creator</span>
+        <p>Hand him the Day 3 post. He told you he wants to encourage other dads and remind them their life matters. Let him.</p>
+      </li>
+      <li class="person">
+        <span class="who">The dad who's new to all this</span>
+        <p><q>I don't really engage in social media or online forums, so all of this is really uncharted territory for me.</q> He isn't disengaged &mdash; he's unfamiliar. One line from you showing him exactly where to type.</p>
+      </li>
+    </ul>
+    <p class="lede">And two to leave alone: the man who told you Skool is a nonstarter meant it &mdash; let him go warmly, he is not a retention problem. The self-described lurker left his own door open (<q>look forward to having a community for fatherhood when I can</q>) &mdash; leave it open, don't chase him.</p>
+  </section>
+
+  <footer class="limits">
+    <h2>What this doesn't tell you</h2>
+    <p>Eleven replies, gathered months into these men's membership, from the dads willing to answer a DM at all. That makes this a strong read on <em>why dads stay loyal to you</em> and <em>why the room went quiet</em> &mdash; and no read at all on a new dad's first week, because nobody in this file was new. The men who drifted off before you asked aren't here either.</p>
+    <p>Nothing here has been sent or posted to anyone. Every draft and every message stays yours to send by hand.</p>
+  </footer>
+
+</div>
