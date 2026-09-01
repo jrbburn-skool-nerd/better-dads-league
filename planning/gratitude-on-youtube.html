@@ -1,0 +1,291 @@
+<title>Gratitude On YouTube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+  :root{
+    --ground:#eceeeb;--surface:#f5f6f4;--ink:#1b2021;--muted:#5f6a68;--faint:#8a9391;
+    --rule:#d2d8d3;--accent:#2f6f62;--signal:#a26a1f;--signal-wash:#f0e6d6;
+    --panel-ink:#f2f4f1;--panel-ground:#22302c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#14181a;--surface:#1b2124;--ink:#e4e9e6;--muted:#95a19d;--faint:#6e7a78;
+      --rule:#2a3235;--accent:#74b8a7;--signal:#d9a05b;--signal-wash:#2c2519;
+      --panel-ink:#e9efec;--panel-ground:#1f2b28;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#14181a;--surface:#1b2124;--ink:#e4e9e6;--muted:#95a19d;--faint:#6e7a78;
+    --rule:#2a3235;--accent:#74b8a7;--signal:#d9a05b;--signal-wash:#2c2519;
+    --panel-ink:#e9efec;--panel-ground:#1f2b28;
+  }
+  body{background:var(--ground);color:var(--ink);
+    font-family:"Source Sans 3","Helvetica Neue",Arial,sans-serif;
+    font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:50rem;margin:0 auto;
+    padding:clamp(2.2rem,6vw,4.5rem) clamp(1.1rem,5vw,2rem) 5rem;
+    display:flex;flex-direction:column;gap:clamp(2.4rem,5vw,3.4rem);}
+  h1,h2,h3{font-family:"Zilla Slab",Georgia,serif;text-wrap:balance;margin:0;}
+  p{margin:0;} q{quotes:"\201C" "\201D";font-family:"Newsreader",Georgia,serif;font-style:italic;}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule);}
+  a:hover{border-bottom-color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--signal);outline-offset:2px;}
+  .eyebrow{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--accent);}
+
+  .masthead{display:flex;flex-direction:column;gap:1rem;}
+  .masthead .rule{height:3px;background:var(--accent);width:3.5rem;border-radius:2px;}
+  .masthead h1{font-size:clamp(2.3rem,7.5vw,3.4rem);font-weight:700;line-height:1.06;letter-spacing:-.015em;}
+  .standfirst{font-size:1.13rem;color:var(--muted);max-width:36rem;}
+  .standfirst strong{color:var(--ink);font-weight:600;}
+
+  .section{display:flex;flex-direction:column;gap:1.4rem;}
+  .section > h2{font-size:1.55rem;font-weight:600;padding-bottom:.6rem;border-bottom:1px solid var(--rule);}
+  .lede{color:var(--muted);max-width:37rem;}
+  .lede strong{color:var(--ink);font-weight:600;}
+
+  .lanes{display:flex;flex-direction:column;gap:1rem;list-style:none;padding:0;margin:0;}
+  .lanes li{display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;align-items:baseline;
+    padding-bottom:.95rem;border-bottom:1px solid var(--rule);}
+  .lanes li:last-child{border-bottom:0;padding-bottom:0;}
+  .lanes .name{font-family:"Zilla Slab",Georgia,serif;font-weight:600;font-size:1.08rem;}
+  .lanes .verdict{font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    border:1px solid var(--rule);color:var(--faint);border-radius:2px;padding:.16rem .5rem;white-space:nowrap;}
+  .lanes .yours .verdict{color:var(--accent);border-color:var(--accent);}
+  .lanes .body{grid-column:1 / -1;color:var(--muted);}
+
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+    padding:1.2rem 1.3rem 1.3rem;display:flex;flex-direction:column;gap:.85rem;}
+  .card.top{border-color:var(--signal);}
+  .card-head{display:flex;flex-direction:column;gap:.3rem;}
+  .rank{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--signal);}
+  .card h3{font-size:1.16rem;font-weight:600;line-height:1.35;}
+  .chan{font-size:.92rem;color:var(--faint);}
+  .stats{display:flex;flex-wrap:wrap;gap:.4rem .55rem;}
+  .stat{font-size:.72rem;font-weight:600;letter-spacing:.04em;font-variant-numeric:tabular-nums;
+    border:1px solid var(--rule);border-radius:2px;padding:.18rem .5rem;color:var(--muted);white-space:nowrap;}
+  .stat b{color:var(--ink);font-weight:700;}
+  .stat.hot{border-color:var(--signal);color:var(--signal);}
+  .stat.hot b{color:var(--signal);}
+  .card p{color:var(--muted);}
+  .card p strong{color:var(--ink);font-weight:600;}
+  .angle{border-left:3px solid var(--accent);padding-left:.9rem;display:flex;flex-direction:column;gap:.3rem;}
+  .angle .label{font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--accent);}
+
+  .panel{background:var(--panel-ground);color:var(--panel-ink);border-radius:4px;
+    padding:clamp(1.6rem,5vw,2.3rem);display:flex;flex-direction:column;gap:1rem;}
+  .panel .eyebrow{color:var(--signal);}
+  .panel h2{font-size:clamp(1.35rem,4vw,1.85rem);font-weight:600;line-height:1.3;}
+  .panel p{color:#b9c6c1;} .panel strong{color:var(--panel-ink);font-weight:600;}
+  .panel q{color:var(--panel-ink);}
+
+  .notes{display:flex;flex-direction:column;gap:.85rem;list-style:none;padding:0;margin:0;}
+  .notes li{position:relative;padding-left:1.9rem;color:var(--muted);}
+  .notes li::before{content:"";position:absolute;left:0;top:.55rem;width:.62rem;height:.62rem;
+    border:2px solid var(--accent);border-radius:1px;}
+  .notes strong{color:var(--ink);font-weight:600;}
+
+  .foot{border-top:1px solid var(--rule);padding-top:1.3rem;display:flex;flex-direction:column;gap:.55rem;}
+  .foot h2{font-size:1rem;font-weight:600;}
+  .foot p{font-size:.9rem;color:var(--faint);}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="rule"></div>
+    <p class="eyebrow">Better Dads League &middot; reaction video research</p>
+    <h1>Gratitude on YouTube</h1>
+    <p class="standfirst">Who is actually talking about gratitude, how big they are, and which videos are worth reacting to. <strong>The headline: &ldquo;gratitude&rdquo; on YouTube is three different audiences wearing the same word</strong>, and only one of them is yours.</p>
+  </header>
+
+  <section class="section">
+    <h2>Three audiences, one keyword</h2>
+    <p class="lede">Search &ldquo;gratitude&rdquo; and the results are overwhelmingly not what you&rsquo;d assume. Knowing which lane you&rsquo;re entering matters more than any single video choice.</p>
+    <ul class="lanes">
+      <li>
+        <span class="name">Prayer and worship</span>
+        <span class="verdict">Skip</span>
+        <span class="body">By far the biggest slice. Morning prayer videos, worship instrumentals, Brandon Lake&rsquo;s song <em>Gratitude</em> in a dozen lyric-video re-uploads. <strong>You cannot react to a prayer</strong>, and trying reads as disrespectful.</span>
+      </li>
+      <li>
+        <span class="name">Manifestation and affirmations</span>
+        <span class="verdict">Avoid</span>
+        <span class="body">&ldquo;108 Thank Yous,&rdquo; abundance affirmations, 777 portals, law of attraction. High volume, and the heaviest overclaiming anywhere in the topic. Easy to dunk on, but it drags in an audience that wants manifestation, not fatherhood.</span>
+      </li>
+      <li class="yours">
+        <span class="name">Ideas and evidence</span>
+        <span class="verdict">Your lane</span>
+        <span class="body">Kurzgesagt, TED and TEDx, Jim Kwik, Psych2Go. Much smaller, but it is the only lane where anyone makes an <em>argument</em> &mdash; which is the only thing you can meaningfully react to. It is also the lane where your research grounding is a genuine edge.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">The gap</p>
+    <h2>Nobody is making &ldquo;gratitude practice, for dads.&rdquo;</h2>
+    <p>I searched gratitude crossed with fatherhood across all time. What came back: Father&rsquo;s Day tribute songs, a local news clip, a monkey birthday video and a Nollywood film. <strong>The intersection is empty.</strong></p>
+    <p>Everything below is a video about gratitude in general. <strong>Not one is about gratitude for a man who is failing at bedtime and knows it.</strong> That is the whole reason a reaction from you is worth watching rather than just another summary.</p>
+  </section>
+
+  <section class="section">
+    <h2>Worth reacting to</h2>
+    <p class="lede">Ranked by fit, not by size. Numbers pulled from vidIQ; like rate is likes over views, which is the honest engagement signal on YouTube.</p>
+
+    <div class="card top">
+      <div class="card-head">
+        <p class="rank">Start here</p>
+        <h3>How gratitude can fuel your success</h3>
+        <p class="chan">Jeremy Stoker &middot; TEDx Swansea &middot; July 2025</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>1.0M</b> views</span>
+        <span class="stat"><b>38.2K</b> likes</span>
+        <span class="stat hot"><b>3.8%</b> like rate</span>
+        <span class="stat hot"><b>103</b> views/hr still</span>
+        <span class="stat hot">outlier <b>361</b></span>
+      </div>
+      <p>An airline <strong>captain</strong>. A <strong>father of three</strong>. He hit rock bottom and used gratitude to get back to the left-hand seat. A million views in seven months and it is <em>still</em> pulling a hundred views an hour, which means the algorithm has not finished with it.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p>You run a <strong>Captain&rsquo;s Log</strong>. He is a literal captain who says gratitude saved his career. That coincidence is the video. Agree with him on the practice, then add the thing his talk doesn&rsquo;t have: the actual numbers, and a log built so a man can miss a month without quitting.</p>
+      </div>
+    </div>
+
+    <div class="card top">
+      <div class="card-head">
+        <p class="rank">The big one</p>
+        <h3>An Antidote to Dissatisfaction</h3>
+        <p class="chan">Kurzgesagt &ndash; In a Nutshell &middot; 25.5M subscribers</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>16.9M</b> views</span>
+        <span class="stat"><b>817K</b> likes</span>
+        <span class="stat hot"><b>4.8%</b> like rate</span>
+        <span class="stat"><b>25.5K</b> comments</span>
+      </div>
+      <p>The definitive gratitude video on the internet, by an order of magnitude. And here is the part that matters: <strong>Kurzgesagt sells a gratitude journal too.</strong> They built the same product you did, for a general audience, off the same literature.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p>Not a takedown. A <strong>practitioner&rsquo;s footnote</strong>: beautiful animation is easy to admire and hard to actually do. What happens when a real dad runs 28 entries? Where does it break? Their journal has no answer for the night you miss. Yours does.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="rank">Pair with the above</p>
+        <h3>We Could All Use a Little Change</h3>
+        <p class="chan">vlogbrothers &middot; John Green &middot; 4.09M subscribers</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>311K</b> views</span>
+        <span class="stat"><b>22.0K</b> likes</span>
+        <span class="stat hot"><b>7.1%</b> like rate</span>
+        <span class="stat">4 min</span>
+      </div>
+      <p>John Green on how Kurzgesagt&rsquo;s gratitude journal changed his life. <strong>The highest like rate in this entire set</strong>, and it is four minutes long. A famous author, publicly open about his mental health, saying a journal helped.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p>React to Kurzgesagt and this back to back as one video: <em>the argument, then a real man who tried it.</em> Green is the proof of concept for your entire Day 0.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="rank">Where your research pays</p>
+        <h3>How Gratitude Rewires Your Brain</h3>
+        <p class="chan">Jim Kwik &middot; 1.94M subscribers &middot; 2022</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>495K</b> views</span>
+        <span class="stat"><b>3.1%</b> engagement</span>
+        <span class="stat">11 min</span>
+      </div>
+      <p>&ldquo;Rewires your brain&rdquo; is the single most common claim in this topic, and it runs well ahead of the evidence. You now know what the meta-analyses actually say.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p><strong>Be generous, not combative.</strong> &ldquo;He&rsquo;s mostly right and the language is oversold&rdquo; is a better video than a dunk. Then give the real figure &mdash; roughly g = 0.19 to 0.22 &mdash; and make the case that a small effect at ninety seconds a night is still the best deal in self-improvement.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="rank">The contrarian</p>
+        <h3>I Have a Gratitude Problem</h3>
+        <p class="chan">Mal Wrenn Corbin &middot; TEDx Boston College &middot; recent</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>75K</b> views</span>
+        <span class="stat hot"><b>18%</b> engagement</span>
+        <span class="stat hot">outlier <b>193</b></span>
+      </div>
+      <p>Small by views, but <strong>the highest engagement rate of anything I found</strong> by a wide margin. People argue about this one. A talk that is sceptical of gratitude is far more interesting to react to than another one praising it.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p>You get to be the balanced one. You already hold both halves: gratitude is real and small, it is not a treatment, and it will not fix the thing the man is actually frightened of.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="rank">The serious one</p>
+        <h3>How gratitude rewires your brain</h3>
+        <p class="chan">Christina Costa &middot; TED and TEDx UofM &middot; ~524K combined</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>311K</b> TEDx</span>
+        <span class="stat"><b>213K</b> TED</span>
+        <span class="stat"><b>3.2%</b> like rate</span>
+      </div>
+      <p>A psychology PhD researching wellbeing who was diagnosed with a brain tumour mid-study, then used her own research on herself. She is the closest thing here to your own evidence-first stance.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p>No pushback needed. Use it to make the <em>providing under pressure</em> point: gratitude was studied on people living with serious illness, not just comfortable undergraduates. <strong>This practice was built for hard conditions.</strong></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="rank">Only if you want the fight</p>
+        <h3>The Healing Power of Gratitude &mdash; Telomeres</h3>
+        <p class="chan">Bruce Lipton, PhD &middot; 627K subscribers</p>
+      </div>
+      <div class="stats">
+        <span class="stat"><b>544K</b> views</span>
+        <span class="stat"><b>3.4%</b> like rate</span>
+      </div>
+      <p>Claims gratitude engages telomerase and slows ageing. This is the furthest overreach in the topic, and correcting it is genuinely useful.</p>
+      <div class="angle">
+        <p class="label">Your angle</p>
+        <p><strong>Read the room first.</strong> His audience is devoted and the comments get unpleasant. It is a different kind of video from everything above, and it will bring a different kind of viewer. Worth doing eventually. Not worth doing first.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <p class="rank">Also in range</p>
+        <h3>Three more, lower priority</h3>
+      </div>
+      <p><strong>Want to be happy? Be grateful</strong> &mdash; David Steindl-Rast, TED, 3.8M views. The classic, but from 2013 and gently spiritual, so it dates.</p>
+      <p><strong>Gratitude: The Foundation of Confidence</strong> &mdash; Tara Gooch, TEDx, 415K views, outlier 986. Ties gratitude to confidence, which maps onto your self-worth cluster.</p>
+      <p><strong>6 Journaling Techniques That Will Change Your Life</strong> &mdash; Psych2Go, 528K views, 5.3% like rate. Broad journaling rather than gratitude specifically, but the audience is exactly right.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>How to play it</h2>
+    <ul class="notes">
+      <li><strong>Bring the dad, not the summary.</strong> Every one of these videos already explains gratitude perfectly well. Your only defensible edge is the one nobody else has: a man who runs a community of fathers, holding a log he built, with eleven real replies about failure and short fuses and no money.</li>
+      <li><strong>Lead with agreement.</strong> Reaction videos that open by trashing someone get one kind of audience. Yours should open by taking the person seriously, then adding the thing they left out. That is also just closer to how you write.</li>
+      <li><strong>The correction is your format.</strong> &ldquo;Rewires your brain&rdquo; appears everywhere. You can now say, calmly and with sources, what is actually known. Nobody else in this niche is doing that, and it is the most repeatable segment you have.</li>
+      <li><strong>Every video ends in the same place.</strong> Three things you&rsquo;re grateful for, an Echo, and no streak to break. The reaction is the hook; the log is the offer.</li>
+    </ul>
+  </section>
+
+  <footer class="foot">
+    <h2>About this data</h2>
+    <p>Pulled from vidIQ on 2 September 2026: outlier scans on gratitude, gratitude science, and gratitude crossed with fatherhood, plus a view-ranked search inside YouTube&rsquo;s knowledge topic. Like rate is likes divided by views. Outlier and breakout scores measure a video against its own channel&rsquo;s norm, so a high score on a small channel is not the same as a high score on TED.</p>
+    <p>View counts move. Re-run before you script anything, and check each video is still up.</p>
+  </footer>
+
+</div>
