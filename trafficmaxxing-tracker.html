@@ -1,0 +1,1266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trafficmaxxing Tracker</title>
+<style>
+  :root{
+    --teal:#003754; --teal2:#0d5f86; --bg:#eef3f6; --surface:#ffffff;
+    --line:#d7e0e6; --muted:#5b6b75; --ink:#0f2a3a;
+    --good:#009e5d; --good-bg:#e2f6ec; --red:#c0392b; --red-bg:#fbeae8;
+    --radius:12px; --shadow:0 1px 2px rgba(0,40,60,.06),0 6px 18px rgba(0,40,60,.05);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);
+    color:var(--ink); line-height:1.5; font-size:15px; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1000px; margin:0 auto; padding:0 18px 64px}
+  .num{font-variant-numeric:tabular-nums}
+
+  header{background:var(--teal); color:#fff; padding:26px 0 24px; margin-bottom:22px}
+  header .wrap{padding-top:0;padding-bottom:0}
+  .eyebrow{font-size:11px; letter-spacing:.18em; text-transform:uppercase; opacity:.7; margin:0 0 6px}
+  header h1{margin:0; font-size:30px; font-weight:800; letter-spacing:-.01em}
+  header p{margin:8px 0 0; opacity:.82; max-width:60ch; font-size:14px}
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:20px; margin-bottom:20px}
+  .card h2{margin:0 0 2px; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal)}
+  .card .sub{margin:0 0 16px; color:var(--muted); font-size:13px}
+  .cardhead{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap}
+
+  .plan{background:var(--teal); color:#fff; border-radius:10px; padding:16px 18px; margin:4px 0 18px; font-size:17px; line-height:1.45}
+  .plan b{color:#8fd0ee; font-weight:700}
+  .plan .hint{color:#cfe3ee; font-size:14px}
+
+  .grid{display:grid; gap:14px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  label.field{display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); font-weight:600}
+  input,select,textarea{font:inherit; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); width:100%}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--teal2); outline-offset:1px; border-color:var(--teal2)}
+  .num-in{font-variant-numeric:tabular-nums}
+
+  .chips-label{font-size:12px; color:var(--muted); font-weight:600; margin:16px 0 0}
+  .planlist{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px}
+  .plan-item{display:inline-flex; align-items:center; gap:6px}
+  .chip{border:1px solid var(--line); background:#fff; color:var(--ink); padding:6px 12px; border-radius:999px; font-size:13px; cursor:pointer; user-select:none}
+  .chip[aria-pressed="true"]{background:var(--teal); border-color:var(--teal); color:#fff}
+  .chip[aria-disabled="true"]{opacity:.4; cursor:not-allowed}
+  .plan-item .count{width:58px; padding:6px; text-align:center}
+  .plan-item .per{font-size:12px; color:var(--muted)}
+  .plan-total{display:flex; justify-content:space-between; align-items:center; margin-top:18px; padding:12px 16px;
+    background:#f3f7f9; border:1px solid var(--line); border-radius:10px; font-size:14px; font-weight:600}
+  .plan-total b{font-size:24px; color:var(--teal)}
+
+  .btn{font:inherit; font-weight:600; border-radius:8px; padding:10px 16px; cursor:pointer; border:1px solid transparent}
+  .btn.primary{background:var(--teal); color:#fff}
+  .btn.primary:hover{background:#04456a}
+  .btn.ghost{background:#fff; color:var(--teal); border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--teal2)}
+  .btn.small{padding:6px 12px; font-size:13px}
+  .btn.danger{background:#fff;color:var(--red);border-color:#e7c3bd}
+  .btn:focus-visible{outline:2px solid var(--teal2); outline-offset:2px}
+  .row-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .tile{border:1px solid var(--line); border-radius:10px; padding:14px; background:#fff}
+  .tile .k{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:700}
+  .tile .v{font-size:28px; font-weight:800; color:var(--teal); margin-top:4px}
+  .tile.good .v{color:var(--good)}
+  .tile .foot{font-size:11px; color:var(--muted); margin-top:2px}
+
+  .alert{border-radius:10px; padding:12px 14px; font-size:14px; margin-bottom:12px; display:none}
+  .alert.show{display:block}
+  .alert.warn{background:var(--red-bg); border:1px solid #eabfb8; color:#8f281c}
+  .alert.ok{background:var(--good-bg); border:1px solid #b9e6ce; color:#0a6b41}
+
+  .meter-head{display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--muted); margin:16px 0 6px}
+  .meter-head b{color:var(--ink); font-size:14px}
+  .meter{height:12px; background:#e3ebef; border-radius:999px; overflow:hidden}
+  .meter > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--teal2),var(--teal)); transition:width .4s ease}
+
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px}
+  table{border-collapse:collapse; width:100%; font-size:13px}
+  th,td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line)}
+  th{background:#f3f7f9; color:var(--muted); font-size:11px; letter-spacing:.05em; text-transform:uppercase; font-weight:700}
+  td.n{text-align:right; font-variant-numeric:tabular-nums}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap}
+  .pill.met{background:var(--good-bg); color:var(--good)}
+  .pill.miss{background:var(--red-bg); color:#8f281c}
+  .pill.ontime{background:#dbeaf1; color:var(--teal)}
+  .cov-good{color:var(--good); font-weight:600}
+  .cov-ontime{color:var(--teal); font-weight:600}
+  .cov-risk{color:var(--red); font-weight:600}
+  .stat-note{font-size:11px; color:var(--muted); margin-top:3px}
+  .link{color:var(--teal2); background:none; border:none; cursor:pointer; font:inherit; padding:0; text-decoration:underline; font-size:13px}
+  .link.del{color:var(--red)}
+  .empty{padding:30px 14px; text-align:center; color:var(--muted)}
+  .empty b{color:var(--ink); display:block; margin-bottom:4px}
+  .save-note{font-size:12px; color:var(--muted); text-align:center; margin-top:12px}
+
+  /* expandable log row */
+  .detail td{background:#f8fbfc; padding:0}
+  .detail-inner{padding:12px 14px}
+  .dgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px}
+  .dbox{background:#fff; border:1px solid var(--line); border-radius:8px; padding:9px 11px}
+  .dbox .kk{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:700}
+  .dbox .vv{font-size:13px; margin-top:3px}
+  .rowbtn{background:none;border:none;cursor:pointer;font:inherit;color:var(--teal);font-weight:700;padding:0;display:flex;align-items:center;gap:6px}
+  .caret{display:inline-block;transition:transform .15s ease;font-size:11px;color:var(--muted)}
+  .caret.open{transform:rotate(90deg)}
+
+  /* modal */
+  .backdrop{position:fixed; inset:0; background:rgba(6,30,42,.55); display:none; align-items:flex-start; justify-content:center; padding:24px 14px; z-index:50; overflow-y:auto}
+  .backdrop.show{display:flex}
+  .modal{background:#fff; border-radius:14px; width:100%; max-width:620px; box-shadow:0 24px 60px rgba(0,30,45,.3)}
+  .modal-head{position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line); padding:16px 20px; border-radius:14px 14px 0 0;
+    display:flex; justify-content:space-between; align-items:center; gap:10px}
+  .modal-head h3{margin:0; font-size:16px; color:var(--teal)}
+  .modal-body{padding:18px 20px}
+  .modal-foot{position:sticky; bottom:0; background:#fff; border-top:1px solid var(--line); padding:14px 20px; border-radius:0 0 14px 14px; display:flex; gap:10px; justify-content:flex-end}
+  .x{background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:var(--muted);padding:0 4px}
+
+  /* CSV fallback */
+  .csvbox{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; line-height:1.45;
+    background:#f8fbfc; white-space:pre; overflow:auto; resize:vertical; min-height:220px}
+
+  /* per-place quick rows in modal */
+  .placerow{border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:10px}
+  .placerow .top{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px}
+  .placerow .nm{font-weight:700; font-size:14px}
+  .placerow .goal{font-size:11px; color:var(--muted); font-weight:600}
+  .twoup{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .minif{display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.05em}
+  .more{margin-top:10px; display:none}
+  .more.show{display:block}
+  .morebtn{font-size:12px; color:var(--teal2); background:none; border:none; cursor:pointer; text-decoration:underline; padding:0; margin-top:8px}
+  .fillbtn{font-size:12px; padding:5px 10px}
+  .modal-note{font-size:12px; color:var(--muted); margin:0 0 16px}
+  .placerow.main{border-color:var(--teal2); border-width:2px}
+  .goalcheck{display:flex; align-items:center; gap:8px; margin-top:12px; font-size:13px;
+    font-weight:600; color:var(--teal); cursor:pointer}
+  .goalcheck input{width:18px; height:18px; accent-color:var(--good); margin:0; flex:none}
+  .goalnote{font-weight:400; color:var(--muted); font-size:12px}
+  .askrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:2px 0 6px}
+  .askq{font-size:13px; font-weight:600; color:var(--teal)}
+  .askrow select{width:auto; min-width:170px; padding:7px 9px; font-size:13px}
+  .checkcard{border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px}
+  .checkhead{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px}
+  .checkhead span:first-child{font-weight:700; font-size:14px}
+  .checkgridhead,.checkrow{display:grid; grid-template-columns:1fr 104px 104px 78px 132px; align-items:center; gap:8px}
+  .checkgridhead{font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
+    font-weight:700; padding-bottom:6px; border-bottom:1px solid var(--line); text-align:center}
+  .checkgridhead span:first-child{text-align:left}
+  .checkrow{padding:9px 0; border-bottom:1px solid #eef3f6; text-align:center}
+  .checkrow:last-child{border-bottom:none}
+  .checkrow .cname{text-align:left; font-size:13px}
+  .checkrow input[type=checkbox]{width:20px; height:20px; accent-color:var(--good); cursor:pointer; margin:0; flex:none}
+  .cellwrap{display:flex; align-items:center; justify-content:center; gap:7px}
+  .qty{width:56px; padding:5px 6px; text-align:center; font-size:13px; font-variant-numeric:tabular-nums; display:none}
+  .folw{width:64px; padding:5px 6px; text-align:center; font-size:13px; font-variant-numeric:tabular-nums}
+  .thru{width:126px; padding:4px 6px; font-size:12px}
+  .qty.show{display:block}
+  .fieldrow{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:end}
+  .fieldrow label.field{min-width:0}
+  .field .hintlbl{font-weight:400; text-transform:none; color:var(--muted); white-space:nowrap}
+
+  /* single top bar: plan + log action */
+  .topbar{display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:16px 20px; margin-bottom:20px}
+  .tb-left{min-width:220px}
+  .tb-plan{font-size:16px; font-weight:700; color:var(--teal)}
+  .tb-status{font-size:13px; color:var(--muted); margin-top:3px}
+  .tb-status b{color:var(--ink)}
+  .tb-right{display:flex; align-items:center; gap:14px}
+  .btn.big{padding:12px 22px; font-size:15px}
+
+  .confirmbar{display:none; width:100%; margin-top:12px; padding:10px 14px; background:#f3f7f9;
+    border:1px solid var(--line); border-radius:10px; font-size:13px; align-items:center; gap:12px}
+  .confirmbar.show{display:flex}
+  .confirmbar.danger-confirm{background:var(--red-bg); border-color:#eabfb8; color:#8f281c;
+    text-align:left; flex-wrap:wrap; justify-content:center}
+  .confirmbar.danger-confirm b{display:block}
+
+  /* collapsible */
+  .collapse{display:none}
+  .collapse.show{display:block}
+
+  @media (max-width:820px){ .g4{grid-template-columns:repeat(2,1fr)} .stats{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:520px){ .g4,.g3,.g2{grid-template-columns:1fr} header h1{font-size:24px} .hide-sm{display:none} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Make Money With Community</p>
+    <h1>Trafficmaxxing Tracker</h1>
+    <p>Set your plan once. Log your day in a few taps. Watch your coverage and results move as you go.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- TOP BAR: plan + log button in one -->
+  <section class="topbar" id="lockedCard" style="display:none">
+    <div class="tb-left">
+      <div class="tb-plan" id="tbPlan">—</div>
+      <div class="tb-status" id="topStatus"></div>
+    </div>
+    <div class="tb-right">
+      <button class="btn primary big" id="openLog">Log today</button>
+      <button class="link" id="editCommit">Edit plan</button>
+    </div>
+    <div class="confirmbar" id="confirmEdit">
+      <span>Edit your locked plan?</span>
+      <button class="btn ghost small" id="confirmYes">Yes, edit</button>
+      <button class="link" id="confirmNo">Cancel</button>
+    </div>
+  </section>
+
+  <!-- COMMITMENT: editable form -->
+  <section class="card" id="commitCard">
+    <h2>Your Commitment</h2>
+    <p class="sub">Lock this in during the Preparation Phase.</p>
+    <div class="plan" id="planLine">Pick your main platform to set your plan.</div>
+    <div class="grid g4">
+      <label class="field">Name<input id="cName" type="text" placeholder="Your name" autocomplete="off"></label>
+      <label class="field">Trafficmaxxing level
+        <select id="cLevel"><option value="">Choose</option><option>Part Time</option><option>Full Time</option></select></label>
+      <label class="field">Focused hours a day<input id="cHours" class="num-in" type="number" min="0" step="0.5" placeholder="0"></label>
+      <label class="field">Main platform
+        <select id="cMain"><option value="">Choose</option><option>YouTube</option><option>Instagram</option><option>TikTok</option></select></label>
+      <label class="field">Content goal
+        <select id="cContent"><option value="">Choose</option><option>Minimum</option><option>Target</option><option>Ultimate</option><option>Custom</option></select></label>
+      <label class="field">Main content a day<input id="cPieces" class="num-in" type="number" min="0" step="1" placeholder="0"></label>
+    </div>
+    <p class="chips-label">Repurpose to (set content a day for each)</p>
+    <div class="planlist" id="repurposeList"></div>
+    <p class="chips-label">Extra traffic sources (set content a day for each)</p>
+    <div class="planlist" id="sourceList"></div>
+    <div class="plan-total"><span>Total content a day across every place</span><b class="num" id="planTotal">0</b></div>
+    <div class="alert warn" id="lockWarn">Choose your main platform and how much content a day before locking in.</div>
+    <div class="row-actions" style="margin-top:16px"><button class="btn primary" id="lockCommit">Lock in my commitment</button></div>
+  </section>
+
+  <!-- SCHEDULING -->
+  <section class="card">
+    <h2>Scheduling &amp; Runway</h2>
+    <p class="sub">Made, went out and queued are all-time totals. Days ahead is what you still have queued divided by your daily goal.</p>
+    <div class="alert warn" id="batchWarn"></div>
+    <div class="alert ok" id="batchOk"></div>
+    <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+      <div class="tile good"><div class="k">Covered about</div><div class="v num" id="runwayDays">0</div><div class="foot">days ahead overall</div></div>
+      <div class="tile"><div class="k">Scheduled ahead</div><div class="v num" id="bufferOut">0</div><div class="foot">queued, not out yet</div></div>
+      <div class="tile"><div class="k">Places at risk</div><div class="v num" id="riskCount">0</div><div class="foot">need attention today</div></div>
+    </div>
+    <div class="tablewrap" style="margin-top:14px">
+      <table><thead><tr><th>Place</th><th>Goal/day</th><th>Made<div class="stat-note" style="text-transform:none;letter-spacing:0">all days</div></th><th>Went out<div class="stat-note" style="text-transform:none;letter-spacing:0">all days</div></th><th>Still queued<div class="stat-note" style="text-transform:none;letter-spacing:0">made − out</div></th><th>Days ahead<div class="stat-note" style="text-transform:none;letter-spacing:0">queued ÷ goal</div></th><th>Status<div class="stat-note" style="text-transform:none;letter-spacing:0">goal check uses today</div></th></tr></thead>
+      <tbody id="batchBody"></tbody></table>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="card">
+    <h2>Your Results</h2>
+    <p class="sub">These update the moment you log a day.</p>
+    <div class="stats">
+      <div class="tile"><div class="k">Trafficmaxxing hours</div><div class="v num" id="sHours">0</div></div>
+      <div class="tile good"><div class="k">Content made</div><div class="v num" id="sMade">0</div><div class="foot">created, out or queued</div></div>
+      <div class="tile"><div class="k">Content out</div><div class="v num" id="sPublished">0</div><div class="foot">actually published</div></div>
+      <div class="tile"><div class="k">Still queued</div><div class="v num" id="sScheduled">0</div><div class="foot">made but not out yet</div></div>
+      <div class="tile"><div class="k">About page visitors</div><div class="v num" id="sVisitors">0</div><div class="foot" id="sVisitorsFoot">rolling 30 days</div></div>
+      <div class="tile"><div class="k">Total members</div><div class="v num" id="sMembers">0</div><div class="foot" id="sMembersFoot">latest reading</div></div>
+      <div class="tile good"><div class="k">Growth this cohort</div><div class="v num" id="sGrowth">0</div><div class="foot" id="sGrowthFoot">net, includes people leaving</div></div>
+      <div class="tile"><div class="k">Days commitment met</div><div class="v num" id="sMet">0</div><div class="foot num" id="sLogged">of 0 logged</div></div>
+      <div class="tile good"><div class="k">Current streak</div><div class="v num" id="sStreak">0</div><div class="foot num" id="sBestFoot">best 0</div></div>
+    </div>
+    <div class="meter-head"><span>About page visitors, rolling 30 days, toward the 1,000 checkpoint</span><b><span class="num" id="ckCount">0</span> / 1,000</b></div>
+    <div class="meter"><i id="ckBar"></i></div>
+    <div class="alert warn" id="ck100" style="margin-top:12px">100+ visitors and no joins yet. Ask for a review of your About page.</div>
+    <div class="alert ok" id="ck1000ok" style="margin-top:12px">1,000+ visitors reached. You have enough traffic to judge your About page.</div>
+  </section>
+
+  <!-- FOLLOWERS -->
+  <section class="card" id="folCard" style="display:none">
+    <h2>Follower Growth</h2>
+    <p class="sub">From the follower counts you log. Growth compares your latest reading to your first. YouTube surfaces share one channel, so they count once.</p>
+    <div class="stats" style="grid-template-columns:repeat(2,1fr); margin-bottom:14px">
+      <div class="tile"><div class="k">Followers now</div><div class="v num" id="folTotal">0</div><div class="foot">all tracked platforms</div></div>
+      <div class="tile good"><div class="k">Growth this cohort</div><div class="v num" id="folGrowth">0</div><div class="foot">all tracked platforms, net of unfollows</div></div>
+    </div>
+    <div class="tablewrap">
+      <table><thead><tr><th>Place</th><th>Followers now</th><th>Growth</th><th>Last logged</th></tr></thead>
+      <tbody id="folBody"></tbody></table>
+    </div>
+  </section>
+
+  <!-- DAILY LOG -->
+  <section class="card">
+    <div class="cardhead">
+      <div>
+        <h2>Daily Log</h2>
+        <p class="sub" style="margin-bottom:0"><span id="logCount">0 days logged</span>. Tap a date to see the breakdown by place.</p>
+      </div>
+      <div class="row-actions">
+        <button class="btn ghost small" id="toggleLog">Show log</button>
+        <button class="btn ghost small" id="exportBtn">CSV</button>
+      </div>
+    </div>
+    <div class="collapse" id="logCollapse">
+      <div class="tablewrap" style="margin-top:16px">
+        <table><thead><tr>
+          <th>Date</th><th class="hide-sm">Hours</th><th>Made</th><th>Went out</th><th class="hide-sm">Queue</th><th>Visitors</th><th>Members</th><th>Goal</th><th></th>
+        </tr></thead><tbody id="logBody"></tbody></table>
+      </div>
+      <p class="save-note" id="saveNote">Your data saves in this browser on this device.</p>
+    </div>
+  </section>
+  <!-- CLEAR ALL -->
+  <section class="card" style="text-align:center">
+    <button class="btn danger" id="resetBtn">Clear all data</button>
+    <div class="confirmbar danger-confirm" id="confirmClear">
+      <span><b>You do realize you're going to clear it all?</b> Your commitment and every logged day will be erased. This cannot be undone. Are you sure?</span>
+      <button class="btn danger small" id="clearYes">Yes, clear everything</button>
+      <button class="link" id="clearNo">Cancel</button>
+    </div>
+  </section>
+</div>
+
+<!-- LOG MODAL -->
+<div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Log your day</h3>
+      <button class="x" id="closeModal" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid g2" style="margin-bottom:8px">
+        <label class="field">Date<input id="dDate" type="date"></label>
+        <label class="field">Focused hours<input id="dHours" class="num-in" type="number" min="0" step="0.5" placeholder="0"></label>
+      </div>
+      <div class="row-actions" style="margin:10px 0 16px">
+        <button class="btn ghost small fillbtn" id="fillGoal">Mark everything done</button>
+        <button class="btn ghost small fillbtn" id="clearAll">Clear entries</button>
+      </div>
+      <div id="placeRows"></div>
+      <p class="modal-note"><b>Made</b> is new content you created today, whether it goes out now or later. <b>Went out</b> is what actually published today, including anything your scheduler posted for you.</p>
+      <div class="fieldrow">
+        <label class="field">About page visitors <span class="hintlbl">(30-day)</span>
+          <input id="dVisitors" class="num-in" type="number" min="0" step="1" placeholder="optional"></label>
+        <label class="field">Total members <span class="hintlbl">(from dashboard)</span>
+          <input id="dMembers" class="num-in" type="number" min="0" step="1" placeholder="optional"></label>
+      </div>
+      <label class="field" style="margin-top:14px">Notes
+        <input id="dNotes" type="text" placeholder="Optional"></label>
+    </div>
+    <div class="alert warn" id="noOutWarn" style="margin:0 20px 14px">
+      <b>&#9888; Are you sure nothing went out?</b> Not even scheduled content?
+      <div id="noOutList" class="stat-note" style="margin-top:6px"></div>
+      <div style="margin-top:8px">Saving with nothing out means these places cannot count as ahead today.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" id="cancelBtn">Cancel</button>
+      <button class="btn primary" id="saveBtn">Save day</button>
+    </div>
+  </div>
+</div>
+
+<!-- CSV FALLBACK MODAL -->
+<div class="backdrop" id="csvBackdrop" role="dialog" aria-modal="true" aria-labelledby="csvTitle">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="csvTitle">Copy your CSV</h3>
+      <button class="x" id="csvClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-note" id="csvNote">This preview cannot download files. Copy the text below and paste it into a spreadsheet, or save it as <b>trafficmaxxing_log.csv</b>.</p>
+      <textarea id="csvText" class="csvbox" readonly rows="14" aria-label="CSV data"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost" id="csvCopy">Copy to clipboard</button>
+      <button class="btn primary" id="csvDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY="tmx_tracker_v3", mem=null;
+  var canStore=(function(){try{var t="__t";window.localStorage.setItem(t,"1");window.localStorage.removeItem(t);return true;}catch(e){return false;}})();
+  function load(){ if(!canStore) return mem; try{var r=window.localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return null;} }
+  function save(){ if(!canStore){mem=state;return;} try{window.localStorage.setItem(KEY,JSON.stringify(state));}catch(e){mem=state;} }
+
+  var state=load()||{commitment:{},days:[]};
+  state.commitment=state.commitment||{};
+  state.commitment.repurposePlan=state.commitment.repurposePlan||{};
+  state.commitment.sourcePlan=state.commitment.sourcePlan||{};
+  state.days=state.days||[];
+
+  var REPURPOSE_ALL=["YouTube","YouTube Shorts","Instagram","TikTok","Facebook"];
+  var SOURCES=["YouTube posts","Threads","X","Pinterest","LinkedIn"];
+  var HOURS_BY_LEVEL={"Part Time":2,"Full Time":4};
+  var PIECES_BY_CONTENT={"Minimum":1,"Target":3,"Ultimate":15};
+
+  var $=function(id){return document.getElementById(id);};
+  var editingId=null, openRows={};
+
+  function n(v){var x=parseFloat(v);return isFinite(x)?x:0;}
+  function fmt(x){return (Math.round(x*100)/100).toLocaleString();}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+  function hasOwn(o,k){return Object.prototype.hasOwnProperty.call(o,k);}
+  function rawMain(){return n(state.commitment.pieces);}
+  function todayStr(){var d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
+
+  // places that share one account: YouTube, YouTube Shorts and YouTube posts are one channel
+  function accountGroup(name){
+    if(/^YouTube/i.test(name)) return "YouTube";
+    return name;
+  }
+  function committedPlaces(){
+    var order=[],perDay={};
+    function add(nm,v){ if(v<=0)return; if(order.indexOf(nm)===-1){order.push(nm);perDay[nm]=0;} perDay[nm]+=v; }
+    if(state.commitment.main) add(state.commitment.main,rawMain());
+    REPURPOSE_ALL.forEach(function(k){ if(hasOwn(state.commitment.repurposePlan,k)) add(k,n(state.commitment.repurposePlan[k])); });
+    SOURCES.forEach(function(k){ if(hasOwn(state.commitment.sourcePlan,k)) add(k,n(state.commitment.sourcePlan[k])); });
+    return {order:order,perDay:perDay};
+  }
+  function planTotal(){
+    var t=rawMain();
+    Object.keys(state.commitment.repurposePlan).forEach(function(k){t+=n(state.commitment.repurposePlan[k]);});
+    Object.keys(state.commitment.sourcePlan).forEach(function(k){t+=n(state.commitment.sourcePlan[k]);});
+    return t;
+  }
+  function updatePlanTotal(){var e=$("planTotal"); if(e) e.textContent=fmt(planTotal());}
+  // selected places follow the main content goal until the person types their own number
+  function syncPlanCounts(){
+    var amt=rawMain();
+    if(amt<=0) return;
+    var manual=state.commitment.manualCounts||{};
+    [state.commitment.repurposePlan,state.commitment.sourcePlan].forEach(function(map){
+      Object.keys(map).forEach(function(k){ if(!manual[k]) map[k]=amt; });
+    });
+  }
+
+  function dayActionTotal(d,act){var s=0,pl=d.places||{};Object.keys(pl).forEach(function(k){s+=n(pl[k][act]);});return s;}
+  // A day counts as met when what went out covers the whole daily plan, every place
+  // included, which is the same number the plan summary and the runway maths use.
+  function dayMet(d){ var goal=planTotal(); return goal>0 && dayActionTotal(d,"out")>=goal; }
+  function breakdown(d,act){
+    var pl=d.places||{},parts=[];
+    Object.keys(pl).forEach(function(k){var v=n(pl[k][act]); if(v>0) parts.push(esc(k)+" "+fmt(v));});
+    return parts.join(", ");
+  }
+  function publishedTotalFor(place){
+    var t=0;
+    state.days.forEach(function(d){ if(d.places&&d.places[place]) t+=n(d.places[place].out); });
+    return t;
+  }
+  function throughDateFor(place){
+    var best="";
+    state.days.forEach(function(d){
+      var v=d.places&&d.places[place]&&d.places[place].through;
+      if(v&&v>best) best=v;
+    });
+    return best;
+  }
+  function daysUntil(dateStr){
+    if(!dateStr) return null;
+    var today=todayStr();
+    var a=new Date(today+"T00:00:00"), b=new Date(dateStr+"T00:00:00");
+    var diff=Math.round((b-a)/86400000);
+    return diff>0?diff:0;
+  }
+  function latestLoggedDate(){
+    var best="";
+    state.days.forEach(function(d){ if((d.date||"")>best) best=d.date||""; });
+    return best;
+  }
+  // what went out on the most recent day the person logged
+  function publishedTodayFor(place){
+    var t=todayStr(), tot=0;
+    state.days.forEach(function(d){ if((d.date||"")===t && d.places && d.places[place]) tot+=n(d.places[place].out); });
+    return tot;
+  }
+  // Per place totals. Still queued = everything scheduled minus everything published,
+  // so these numbers always reconcile with the daily log.
+  function placeTotals(){
+    var m={};
+    state.days.forEach(function(d){
+      var pl=d.places||{};
+      Object.keys(pl).forEach(function(k){
+        if(!m[k]) m[k]={made:0,out:0};
+        m[k].made+=n(pl[k].made);
+        m[k].out+=n(pl[k].out);
+      });
+    });
+    Object.keys(m).forEach(function(k){ m[k].queued=Math.max(0,m[k].made-m[k].out); });
+    return m;
+  }
+  function placeBuffers(){
+    var m=placeTotals(), out={};
+    Object.keys(m).forEach(function(k){ out[k]=m[k].queued; });
+    return out;
+  }
+
+  // followers logged as a total reading per place: current = latest, growth = latest minus first
+  function followerStats(){
+    var days=state.days.slice().sort(function(a,b){return (a.date||"")<(b.date||"")?-1:1;});
+    var map={};
+    days.forEach(function(d){
+      var pl=d.places||{};
+      Object.keys(pl).forEach(function(k){
+        var v=pl[k].followers;
+        if(v===""||v==null) return;
+        var num=n(v), g=accountGroup(k);
+        if(!map[g]) map[g]={first:num,firstDate:d.date||"",last:num,lastDate:d.date||""};
+        else { map[g].last=num; map[g].lastDate=d.date||""; }
+      });
+    });
+    return map;
+  }
+  function renderFollowers(){
+    var body=$("folBody"), card=$("folCard");
+    if(!body||!card) return;
+    var f=followerStats(), names=Object.keys(f);
+    if(names.length===0){ card.style.display="none"; return; }
+    card.style.display="";
+    var totalNow=0,totalGrow=0;
+    body.innerHTML=names.map(function(k){
+      var r=f[k], grow=r.last-r.first;
+      totalNow+=r.last; totalGrow+=grow;
+      var cls=grow>0?"cov-good":(grow<0?"cov-risk":"");
+      return "<tr><td>"+esc(k)+"</td><td class='n'>"+fmt(r.last)+"</td>"+
+        "<td class='n "+cls+"'>"+(grow>0?"+":"")+fmt(grow)+"</td>"+
+        "<td class='n' style='color:var(--muted)'>"+esc(r.lastDate||"—")+"</td></tr>";
+    }).join("");
+    $("folTotal").textContent=fmt(totalNow);
+    $("folGrowth").textContent=(totalGrow>0?"+":"")+fmt(totalGrow);
+  }
+
+  function compute(){
+    var days=state.days.slice().sort(function(a,b){return (a.date||"")<(b.date||"")?-1:1;});
+    var t={hours:0,made:0,out:0,visitors:0,visitorDate:"",members:0,memberDate:"",growth:0,growthFrom:"",met:0,logged:days.length};
+    days.forEach(function(d){
+      t.hours+=n(d.hours);
+      t.made+=dayActionTotal(d,"made"); t.out+=dayActionTotal(d,"out");
+      if(dayMet(d)) t.met++;
+    });
+    for(var j=days.length-1;j>=0;j--){
+      if(days[j].visitors!==""&&days[j].visitors!=null){ t.visitors=n(days[j].visitors); t.visitorDate=days[j].date||""; break; }
+    }
+    var firstM=null,lastM=null,firstMDate="",lastMDate="";
+    days.forEach(function(d){
+      if(d.members!==""&&d.members!=null){
+        if(firstM===null){ firstM=n(d.members); firstMDate=d.date||""; }
+        lastM=n(d.members); lastMDate=d.date||"";
+      }
+    });
+    t.members = lastM===null?0:lastM;
+    t.memberDate = lastMDate;
+    t.growth = (firstM===null||lastM===null)?0:(lastM-firstM);
+    t.growthFrom = firstMDate;
+    var longest=0,run=0,cur=0;
+    days.forEach(function(d){ if(dayMet(d)){run++;if(run>longest)longest=run;}else run=0; });
+    for(var i=days.length-1;i>=0;i--){ if(dayMet(days[i])) cur++; else break; }
+    t.queued=Math.max(0,t.made-t.out);
+    t.longest=longest; t.current=cur;
+    return t;
+  }
+
+  function commitReady(){ return !!state.commitment.main && rawMain()>0; }
+  function renderLock(){
+    var locked = commitReady() && state.commitment.locked;
+    $("lockedCard").style.display = locked ? "" : "none";
+    $("commitCard").style.display = locked ? "none" : "";
+    if(locked){
+      var bits=[];
+      if(state.commitment.level) bits.push(state.commitment.level);
+      if(state.commitment.main) bits.push(state.commitment.main);
+      bits.push(fmt(planTotal())+" content/day");
+      if(state.commitment.hours) bits.push(state.commitment.hours+" hrs/day");
+      $("tbPlan").textContent=bits.join("  ·  ");
+    }
+    renderTopStatus();
+  }
+  function renderTopStatus(){
+    var el=$("topStatus"); if(!el) return;
+    if(!commitReady()){ el.textContent=""; return; }
+    var t=compute(), today=todayStr();
+    var loggedToday=state.days.some(function(d){return (d.date||"")===today;});
+    var cp=committedPlaces(), buf=placeBuffers(), risks=0;
+    cp.order.forEach(function(nm){
+      var g=cp.perDay[nm], ahead=Math.max(0,buf[nm]||0);
+      if(ahead<=0 && !(g>0 && publishedTodayFor(nm)>=g)) risks++;
+    });
+    var parts=[loggedToday?"Today logged":"Today not logged", "streak <b>"+fmt(t.current)+"</b>"];
+    if(risks) parts.push("<b>"+risks+"</b> at risk");
+    el.innerHTML=parts.join("  ·  ");
+  }
+
+  function renderPlan(){
+    var c=state.commitment, el=$("planLine");
+    if(!c.main){ el.innerHTML="Pick your main platform to set your plan."; return; }
+    var tg=Object.keys(c.repurposePlan).filter(function(p){return p!==c.main;});
+    var list;
+    if(tg.length===0) list="";
+    else if(tg.length===1) list=esc(tg[0]);
+    else list=tg.slice(0,-1).map(esc).join(", ")+" and "+esc(tg[tg.length-1]);
+    var line="You create for <b>"+esc(c.main)+"</b> first";
+    line += list ? (", then repurpose to <b>"+list+"</b>.") : ".";
+    var total=planTotal();
+    var bits=[];
+    if(total>0) bits.push(fmt(total)+" piece"+(total===1?"":"s")+" of content a day in total");
+    if(n(c.hours)>0) bits.push(fmt(n(c.hours))+" focused hour"+(n(c.hours)===1?"":"s")+" a day");
+    if(bits.length) line += " <span class='hint'>Your goal: "+bits.join(", ")+".</span>";
+    el.innerHTML=line;
+  }
+
+  function renderPlanList(container,options,planMap,disabledVal,defaultFor){
+    container.innerHTML="";
+    options.forEach(function(opt){
+      var wrap=document.createElement("span"); wrap.className="plan-item";
+      var b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=opt;
+      var sel=hasOwn(planMap,opt);
+      b.setAttribute("aria-pressed",sel?"true":"false");
+      if(disabledVal&&opt===disabledVal) b.setAttribute("aria-disabled","true");
+      b.addEventListener("click",function(){
+        if(b.getAttribute("aria-disabled")==="true") return;
+        if(hasOwn(planMap,opt)){
+          delete planMap[opt];
+          if(state.commitment.manualCounts) delete state.commitment.manualCounts[opt];
+        } else { planMap[opt]=defaultFor(); }
+        save(); renderCommitPlan(); renderPlan(); renderStats(); renderTable();
+      });
+      wrap.appendChild(b);
+      if(sel){
+        var inp=document.createElement("input"); inp.type="number"; inp.min="0"; inp.step="1"; inp.className="count num-in";
+        inp.value=planMap[opt]; inp.setAttribute("aria-label",opt+" content a day");
+        inp.addEventListener("input",function(){
+          planMap[opt]=inp.value;
+          state.commitment.manualCounts=state.commitment.manualCounts||{};
+          state.commitment.manualCounts[opt]=true;   // typed by hand, leave it alone
+          save(); updatePlanTotal(); renderPlan(); renderBatch(); renderStats(); renderTable();
+        });
+        var per=document.createElement("span"); per.className="per"; per.textContent="/day";
+        wrap.appendChild(inp); wrap.appendChild(per);
+      }
+      container.appendChild(wrap);
+    });
+  }
+  function renderCommitPlan(){
+    renderPlanList($("repurposeList"),REPURPOSE_ALL,state.commitment.repurposePlan,state.commitment.main,function(){return rawMain()||1;});
+    renderPlanList($("sourceList"),SOURCES,state.commitment.sourcePlan,null,function(){return rawMain()||1;});
+    updatePlanTotal(); renderBatch();
+  }
+
+  function renderBatch(){
+    var body=$("batchBody"),warn=$("batchWarn"),ok=$("batchOk");
+    if(!body) return;
+    var pt=placeTotals(), buf=placeBuffers();
+    var cpAll=committedPlaces(), overall=0;
+    cpAll.order.forEach(function(k){ overall+=Math.max(0,buf[k]||0); });
+    var goal=planTotal();
+    $("runwayDays").textContent=(goal>0?overall/goal:0).toFixed(1);
+    $("bufferOut").textContent=fmt(overall);
+
+    var cp=committedPlaces();
+    if(cp.order.length===0){
+      body.innerHTML="<tr><td colspan='7'><div class='empty'><b>No plan yet</b>Set your plan above to see coverage.</div></td></tr>";
+      warn.className="alert warn"; ok.className="alert ok"; return;
+    }
+    var risks=[], partial=[];
+    body.innerHTML=cp.order.map(function(name){
+      var g=cp.perDay[name];
+      var tot=pt[name]||{made:0,out:0,queued:0};
+      var ahead=tot.queued, pub=tot.out;
+      var thru=throughDateFor(name), realDays=daysUntil(thru);
+      var dcov=g>0?ahead/g:0;
+      var dlabel=dcov.toFixed(1)+"d";
+      if(thru&&realDays!==null){
+        dlabel+="<div class='stat-note'>queue runs to "+esc(thru)+" ("+realDays+" day"+(realDays===1?"":"s")+")</div>";
+      }
+      var outLatest=publishedTodayFor(name);
+      var hitGoal = g>0 && outLatest>=g;
+      var st,cov;
+      if(hitGoal && dcov>=1){
+        var wd=Math.floor(dcov);
+        cov="cov-good"; st={cls:"met",label:wd+" day"+(wd===1?"":"s")+" ahead 🎉"};
+      } else if(hitGoal){
+        cov="cov-ontime"; st={cls:"ontime",label:"On track"};
+      } else if(dcov>=1){
+        cov="cov-good"; st={cls:"met",label:"Covered by queue"};
+      } else {
+        cov="cov-risk";
+        var why = (outLatest>0 && outLatest<g)
+          ? "under goal today, nothing queued"
+          : "nothing out today, nothing queued";
+        st={cls:"miss",label:"At risk",note:why};
+        risks.push(name);
+        if(outLatest>0) partial.push(name);
+      }
+      return "<tr><td>"+esc(name)+"</td><td class='n'>"+fmt(g)+"</td>"+
+        "<td class='n'><b>"+fmt(tot.made)+"</b></td>"+
+        "<td class='n'>"+fmt(pub)+"</td><td class='n'>"+fmt(ahead)+"</td>"+
+        "<td class='n "+cov+"'>"+dlabel+"</td>"+
+        "<td><span class='pill "+st.cls+"'>"+st.label+"</span>"+(st.note?"<div class='stat-note'>"+esc(st.note)+"</div>":"")+"</td></tr>";
+    }).join("");
+    $("riskCount").textContent=fmt(risks.length);
+    if(risks.length){
+      var allUnder = partial.length===risks.length;
+      var anyUnder = partial.length>0;
+      warn.textContent = allUnder
+        ? ("Under goal today with nothing scheduled ahead for "+risks.join(", ")+".")
+        : (anyUnder
+            ? ("Short today with nothing scheduled ahead for "+risks.join(", ")+".")
+            : ("Nothing out today and nothing scheduled ahead for "+risks.join(", ")+"."));
+      warn.className="alert warn show"; ok.className="alert ok";
+    } else {
+      warn.className="alert warn";
+      ok.textContent="Every place is on track or ahead.";
+      ok.className="alert ok show";
+    }
+  }
+
+  function renderStats(){
+    var t=compute();
+    $("sHours").textContent=fmt(t.hours);
+    $("sMade").textContent=fmt(t.made);
+    $("sPublished").textContent=fmt(t.out);
+    $("sScheduled").textContent=fmt(t.queued);
+    $("sVisitors").textContent=fmt(t.visitors);
+    $("sVisitorsFoot").textContent=t.visitorDate?("rolling 30 days, as of "+t.visitorDate):"rolling 30 days";
+    $("sMembers").textContent=fmt(t.members);
+    $("sMembersFoot").textContent=t.memberDate?("as of "+t.memberDate):"latest reading";
+    $("sGrowth").textContent=(t.growth>0?"+":"")+fmt(t.growth);
+    $("sGrowthFoot").textContent=t.growthFrom?("since "+t.growthFrom):"net, includes people leaving";
+    $("sMet").textContent=fmt(t.met);
+    $("sLogged").textContent="of "+fmt(t.logged)+" logged";
+    $("sStreak").textContent=fmt(t.current);
+    $("sBestFoot").textContent="best "+fmt(t.longest);
+    $("ck100").className="alert warn"+((t.visitors>=100&&t.growth<=0)?" show":"");
+    $("ck1000ok").className="alert ok"+((t.visitors>=1000)?" show":"");
+    $("ckCount").textContent=fmt(t.visitors);
+    $("ckBar").style.width=(Math.min(t.visitors/1000,1)*100)+"%";
+  }
+
+  function dayDelta(d){
+    var diff=dayActionTotal(d,"made")-dayActionTotal(d,"out");
+    if(diff>0) return "<span class='cov-good'>+"+fmt(diff)+"</span>";
+    if(diff<0) return "<span class='cov-risk'>"+fmt(diff)+"</span>";
+    return "<span style='color:var(--muted)'>0</span>";
+  }
+  function renderTable(){
+    var body=$("logBody");
+    var lc=$("logCount"); if(lc) lc.textContent=state.days.length+" day"+(state.days.length===1?"":"s")+" logged";
+    if(state.days.length===0){
+      body.innerHTML="<tr><td colspan='9'><div class='empty'><b>No days yet</b>Tap Log today to add your first day.</div></td></tr>";
+      return;
+    }
+    var days=state.days.slice().sort(function(a,b){return (a.date||"")>(b.date||"")?-1:1;});
+    var html="";
+    days.forEach(function(d){
+      var met=dayMet(d), open=!!openRows[d.id];
+      html+="<tr>"+
+        "<td><button class='rowbtn' data-toggle='"+d.id+"'><span class='caret"+(open?" open":"")+"'>&#9654;</span>"+esc(d.date||"—")+"</button></td>"+
+        "<td class='n hide-sm'>"+fmt(n(d.hours))+"</td>"+
+        "<td class='n'><b>"+fmt(dayActionTotal(d,"made"))+"</b></td>"+
+        "<td class='n'>"+fmt(dayActionTotal(d,"out"))+"</td>"+
+        "<td class='n hide-sm'>"+dayDelta(d)+"</td>"+
+        "<td class='n'>"+(d.visitors?fmt(n(d.visitors)):"—")+"</td>"+
+        "<td class='n'>"+(d.members?fmt(n(d.members)):"—")+"</td>"+
+        "<td><span class='pill "+(met?"met":"miss")+"'>"+(met?"On track":"Missed")+"</span></td>"+
+        "<td style='text-align:right'><button class='link' data-edit='"+d.id+"'>Edit</button></td>"+
+      "</tr>";
+      if(open){
+        var box=function(lbl,act){
+          var bd=breakdown(d,act);
+          return "<div class='dbox'><div class='kk'>"+lbl+" "+fmt(dayActionTotal(d,act))+"</div><div class='vv'>"+(bd||"—")+"</div></div>";
+        };
+        html+="<tr class='detail'><td colspan='9'><div class='detail-inner'><div class='dgrid'>"+
+          box("Made","made")+box("Went out","out")+box("Followers","followers")+
+          "</div>"+(d.notes?"<p class='stat-note' style='margin-top:10px'>"+esc(d.notes)+"</p>":"")+
+          "<div class='row-actions' style='margin-top:12px'><button class='link del' data-del='"+d.id+"'>Delete this day</button></div>"+
+          "</div></td></tr>";
+      }
+    });
+    body.innerHTML=html;
+    Array.prototype.forEach.call(body.querySelectorAll("[data-toggle]"),function(b){
+      b.addEventListener("click",function(){var id=b.getAttribute("data-toggle");openRows[id]=!openRows[id];renderTable();});
+    });
+    Array.prototype.forEach.call(body.querySelectorAll("[data-edit]"),function(b){
+      b.addEventListener("click",function(){editDay(b.getAttribute("data-edit"));});
+    });
+    Array.prototype.forEach.call(body.querySelectorAll("[data-del]"),function(b){
+      b.addEventListener("click",function(){deleteDay(b.getAttribute("data-del"));});
+    });
+  }
+
+  // ---- modal ----
+  function renderPlaceRows(){
+    var wrap=$("placeRows"), cp=committedPlaces(), main=state.commitment.main;
+    if(cp.order.length===0){ wrap.innerHTML="<p class='sub'>Set your plan first, then log here.</p>"; return; }
+    var html="";
+    // main platform: real numbers
+    if(main && cp.perDay[main]){
+      html+="<div class='placerow main'>"+
+        "<div class='top'><span class='nm'>"+esc(main)+"</span><span class='goal'>goal "+fmt(cp.perDay[main])+"/day</span></div>"+
+        "<div class='twoup'>"+
+          "<label class='minif'>Made today<input class='num-in' type='number' min='0' step='1' data-place=\""+esc(main)+"\" data-act='made' placeholder='0'></label>"+
+          "<label class='minif'>Went out today<input class='num-in' type='number' min='0' step='1' data-place=\""+esc(main)+"\" data-act='out' placeholder='0'></label>"+
+        "</div>"+
+        "<label class='goalcheck'><input type='checkbox' id='mainGoalCheck'> Did exactly my goal today "+
+          "<span class='goalnote'>sets both to "+fmt(cp.perDay[main])+"</span></label>"+
+        "<div id='queueAsk' style='display:none;margin-top:12px'>"+
+          "<div class='askrow'><label class='askq' for='queueSelect'>What went out today?</label>"+
+          "<select id='queueSelect'>"+
+            "<option value='sched'>The content I already had scheduled</option>"+
+            "<option value='extra'>Extra, on top of the scheduled content</option>"+
+          "</select></div>"+
+          "<div class='goalnote' id='queueNote'></div>"+
+        "</div>"+
+        "<div class='twoup' style='margin-top:10px'>"+
+          "<label class='minif'>Scheduled until <span style='font-weight:400;text-transform:none'>(optional date)</span>"+
+            "<input type='date' data-place=\""+esc(main)+"\" data-act='through'></label>"+
+          "<span></span>"+
+        "</div>"+
+        "<div class='twoup' style='margin-top:10px'>"+
+          "<label class='minif'>Total followers <span style='font-weight:400;text-transform:none'>(optional)</span>"+
+            "<input class='num-in' type='number' min='0' step='1' data-place=\""+esc(main)+"\" data-act='followers' placeholder='0'></label>"+
+          "<span></span>"+
+        "</div></div>";
+    }
+    // everywhere else: two checkmarks
+    var others=cp.order.filter(function(x){return x!==main;});
+    if(others.length){
+      html+="<div class='checkcard'><div class='checkhead'><span>Everywhere else</span><span class='goal'>tick what you did, change the number if needed</span></div>";
+      var othersTotal=0, othersBits=[];
+      others.forEach(function(nm){ var gg=cp.perDay[nm]||0; othersTotal+=gg; othersBits.push(esc(nm)+" "+fmt(gg)); });
+      html+="<div id='extraAsk' style='display:none'>"+
+        "<div class='askrow'><label class='askq' for='allGoalSelect'>Did that extra content get repurposed to all the other platforms?</label>"+
+        "<select id='allGoalSelect'>"+
+          "<option value='manual'>I'll manually input</option>"+
+          "<option value='yes'>Yes</option>"+
+          "<option value='no'>No</option>"+
+        "</select></div>"+
+        "<div class='goalnote' id='allGoalNote' style='margin:0 0 10px'></div></div>";
+
+      html+="<div class='checkgridhead'><span></span><span>Made</span><span>Went out</span><span>Followers</span><span>Scheduled until</span></div>";
+      others.forEach(function(nm){
+        html+="<div class='checkrow'><span class='cname'>"+esc(nm)+"</span>"+
+          "<span class='cellwrap'><input type='checkbox' data-check=\""+esc(nm)+"\" data-act='made' aria-label='"+esc(nm)+" made'>"+
+            "<input class='qty num-in' type='number' min='0' step='1' data-qty=\""+esc(nm)+"\" data-act='made' aria-label='"+esc(nm)+" made amount'></span>"+
+          "<span class='cellwrap'><input type='checkbox' data-check=\""+esc(nm)+"\" data-act='out' aria-label='"+esc(nm)+" went out'>"+
+            "<input class='qty num-in' type='number' min='0' step='1' data-qty=\""+esc(nm)+"\" data-act='out' aria-label='"+esc(nm)+" went out amount'></span>"+
+          "<span class='cellwrap'><input class='folw num-in' type='number' min='0' step='1' data-place=\""+esc(nm)+"\" data-act='followers' placeholder='—' aria-label='"+esc(nm)+" total followers'></span>"+
+          "<span class='cellwrap'><input class='thru' type='date' data-place=\""+esc(nm)+"\" data-act='through' aria-label='"+esc(nm)+" scheduled until'></span>"+
+        "</div>";
+      });
+      html+="</div>";
+    }
+    wrap.innerHTML=html;
+    var allSel=wrap.querySelector("#allGoalSelect");
+    if(allSel){
+      var mainMade=function(){
+        var mi=Array.prototype.filter.call(wrap.querySelectorAll("input[data-place][data-act='made']"),function(x){
+          return x.getAttribute("data-place")===main; })[0];
+        return mi?n(mi.value):0;
+      };
+      var mainOut=function(){
+        var oi=Array.prototype.filter.call(wrap.querySelectorAll("input[data-place][data-act='out']"),function(x){
+          return x.getAttribute("data-place")===main; })[0];
+        return oi?n(oi.value):0;
+      };
+      var fillAmountFor=function(nm,act){
+        var src = (act==="out") ? mainOut() : mainMade();
+        return src>0 ? src : (cp.perDay[nm]||1);
+      };
+      var refreshAllGoalNote=function(){
+        var note=wrap.querySelector("#allGoalNote");
+        var ask=wrap.querySelector("#extraAsk");
+        if(!note) return;
+        var mm=mainMade();
+        var mainGoal=cp.perDay[main]||0;
+        var hasExtra = mainGoal>0 && mm>mainGoal;
+        if(ask){
+          ask.style.display = hasExtra ? "" : "none";
+          if(!hasExtra){
+            var sel=wrap.querySelector("#allGoalSelect");
+            if(sel) sel.value="manual";
+          }
+        }
+        if(!hasExtra) return;
+        var mo=mainOut();
+        if(mm>0){
+          note.innerHTML="<b>Yes</b> mirrors "+esc(main||"your main platform")+": made "+fmt(mm)+", went out "+fmt(mo)+
+            (mm>mo?(", leaving "+fmt(mm-mo)+" queued each."):".")+
+            " <b>No</b> keeps each place at its own goal. Change any place that differs.";
+        } else {
+          note.textContent="Yes fills each place at its own goal: "+othersBits.join(" · ")+"  =  "+fmt(othersTotal)+" total";
+        }
+      };
+      refreshAllGoalNote();
+      var mainMadeInput=Array.prototype.filter.call(wrap.querySelectorAll("input[data-place][data-act='made']"),function(x){
+        return x.getAttribute("data-place")===main; })[0];
+      if(mainMadeInput) mainMadeInput.addEventListener("input",refreshAllGoalNote);
+      var mainOutInput=Array.prototype.filter.call(wrap.querySelectorAll("input[data-place][data-act='out']"),function(x){
+        return x.getAttribute("data-place")===main; })[0];
+      if(mainOutInput) mainOutInput.addEventListener("input",refreshAllGoalNote);
+      allSel.addEventListener("change",function(){
+        var v=allSel.value;
+        if(v==="manual") return;
+        // Yes: mirror the full main amount, extra included.
+        // No: the extra did not get repurposed, so each place gets its own goal.
+        Array.prototype.forEach.call(wrap.querySelectorAll("input[data-check]"),function(cb){
+          var nm=cb.getAttribute("data-check"), act=cb.getAttribute("data-act");
+          var q=Array.prototype.filter.call(wrap.querySelectorAll("input[data-qty]"),function(x){
+            return x.getAttribute("data-qty")===nm && x.getAttribute("data-act")===act; })[0];
+          var amt = (v==="yes") ? fillAmountFor(nm,act) : (cp.perDay[nm]||1);
+          cb.checked=true;
+          if(q){ q.className="qty num-in show"; q.value=amt; }
+        });
+      });
+    }
+    var gc=wrap.querySelector("#mainGoalCheck");
+    if(gc && main){
+      var goalAmt=cp.perDay[main]||0;
+      var mainInput=function(act){
+        return Array.prototype.filter.call(wrap.querySelectorAll("input[data-place][data-act='"+act+"']"),function(x){
+          return x.getAttribute("data-place")===main; })[0];
+      };
+      var syncGoalCheck=function(){
+        var mi=mainInput("made"), oi=mainInput("out");
+        gc.checked = !!(mi&&oi&&n(mi.value)>=goalAmt&&n(oi.value)>=goalAmt&&goalAmt>0);
+      };
+      gc.addEventListener("change",function(){
+        var mi=mainInput("made"), oi=mainInput("out");
+        if(gc.checked){ if(mi) mi.value=goalAmt; if(oi) oi.value=goalAmt; }
+        else { if(mi) mi.value=""; if(oi) oi.value=""; }
+      });
+      var qAsk=wrap.querySelector("#queueAsk"), qSel=wrap.querySelector("#queueSelect"), qNote=wrap.querySelector("#queueNote");
+      var mainQueued = (placeTotals()[main]||{queued:0}).queued;
+      if(qAsk && mainQueued>0){
+        qAsk.style.display="";
+        var dailyRun=Math.min(goalAmt,mainQueued);
+        var refreshQueueNote=function(){
+          if(!qNote) return;
+          qNote.textContent = (qSel.value==="extra")
+            ? ("Your scheduled "+fmt(dailyRun)+" also went out today, so it gets added to what you type.")
+            : ("You have "+fmt(mainQueued)+" queued. What you type is what came out of that queue.");
+        };
+        refreshQueueNote();
+        qSel.addEventListener("change",function(){
+          var oi=mainInput("out");
+          if(qSel.value==="extra"){
+            if(oi){ var typed=n(oi.value); oi.value=typed+dailyRun; }
+          } else {
+            if(oi){ var cur=n(oi.value); oi.value=Math.max(0,cur-dailyRun); }
+          }
+          refreshQueueNote(); syncGoalCheck();
+        });
+      }
+      ["made","out"].forEach(function(a){
+        var el=mainInput(a); if(el) el.addEventListener("input",syncGoalCheck);
+      });
+    }
+
+    // typing followers for one YouTube surface fills the other YouTube surfaces
+    Array.prototype.forEach.call(wrap.querySelectorAll("input[data-act='followers']"),function(inp){
+      inp.addEventListener("input",function(){
+        var src=inp.getAttribute("data-place"), grp=accountGroup(src);
+        Array.prototype.forEach.call(wrap.querySelectorAll("input[data-act='followers']"),function(other){
+          var nm=other.getAttribute("data-place");
+          if(other!==inp && accountGroup(nm)===grp) other.value=inp.value;
+        });
+      });
+    });
+    Array.prototype.forEach.call(wrap.querySelectorAll("input[data-check]"),function(cb){
+      cb.addEventListener("change",function(){
+        var nm=cb.getAttribute("data-check"), act=cb.getAttribute("data-act");
+        var q=Array.prototype.filter.call(wrap.querySelectorAll("input[data-qty]"),function(x){
+          return x.getAttribute("data-qty")===nm && x.getAttribute("data-act")===act; })[0];
+        if(!q) return;
+        if(cb.checked){ q.className="qty num-in show"; if(q.value==="") q.value=cp.perDay[nm]||1; }
+        else { q.className="qty num-in"; q.value=""; }
+      });
+    });
+  }
+
+  function readGrid(){
+    var places={}, cp=committedPlaces();
+    Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-place]"),function(inp){
+      if(inp.value!==""){
+        var p=inp.getAttribute("data-place"),a=inp.getAttribute("data-act");
+        if(!places[p]) places[p]={};
+        places[p][a]=inp.value;
+      }
+    });
+    Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-check]"),function(cb){
+      if(cb.checked){
+        var p=cb.getAttribute("data-check"),a=cb.getAttribute("data-act");
+        var q=Array.prototype.filter.call($("placeRows").querySelectorAll("input[data-qty]"),function(x){
+          return x.getAttribute("data-qty")===p && x.getAttribute("data-act")===a; })[0];
+        var amt=(q&&q.value!=="")?q.value:(cp.perDay[p]||1);
+        if(!places[p]) places[p]={};
+        places[p][a]=amt;
+      }
+    });
+    return places;
+  }
+  function syncMainGoalCheck(){
+    var gc=document.getElementById("mainGoalCheck");
+    if(!gc) return;
+    var cp=committedPlaces(), main=state.commitment.main, goalAmt=cp.perDay[main]||0;
+    var made=0,out=0;
+    Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-place]"),function(inp){
+      if(inp.getAttribute("data-place")!==main) return;
+      if(inp.getAttribute("data-act")==="made") made=n(inp.value);
+      if(inp.getAttribute("data-act")==="out") out=n(inp.value);
+    });
+    gc.checked = goalAmt>0 && made>=goalAmt && out>=goalAmt;
+  }
+  function fillGridFrom(d){
+    Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-place]"),function(inp){
+      var p=inp.getAttribute("data-place"),a=inp.getAttribute("data-act");
+      var v=d.places&&d.places[p]&&d.places[p][a];
+      inp.value=(v==null?"":v);
+    });
+    Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-check]"),function(cb){
+      var p=cb.getAttribute("data-check"),a=cb.getAttribute("data-act");
+      var v=d.places&&d.places[p]&&d.places[p][a];
+      var on=!!(v&&parseFloat(v)>0);
+      cb.checked=on;
+      var q=Array.prototype.filter.call($("placeRows").querySelectorAll("input[data-qty]"),function(x){
+        return x.getAttribute("data-qty")===p && x.getAttribute("data-act")===a; })[0];
+      if(q){ q.className="qty num-in"+(on?" show":""); q.value=on?v:""; }
+    });
+    syncMainGoalCheck();
+  }
+  function openModal(title){
+    $("modalTitle").textContent=title; $("backdrop").className="backdrop show";
+    pendingConfirm=false; $("noOutWarn").className="alert warn"; $("saveBtn").textContent="Save day";
+  }
+  function closeModal(){ $("backdrop").className="backdrop"; editingId=null; }
+
+  function newDay(){
+    renderPlaceRows();
+    ["dHours","dVisitors","dMembers","dNotes"].forEach(function(id){$(id).value="";});
+    $("dDate").value=todayStr();
+    editingId=null;
+    openModal("Log your day");
+  }
+  function editDay(id){
+    var d=state.days.filter(function(x){return x.id===id;})[0];
+    if(!d) return;
+    renderPlaceRows(); fillGridFrom(d);
+    $("dDate").value=d.date||""; $("dHours").value=d.hours||"";
+    $("dVisitors").value=d.visitors||""; $("dMembers").value=d.members||""; $("dNotes").value=d.notes||"";
+    editingId=id;
+    openModal("Edit "+(d.date||"day"));
+  }
+  var pendingConfirm=false;
+  function placesWithNothingOut(places){
+    var cp=committedPlaces(), list=[];
+    cp.order.forEach(function(nm){
+      var r=places[nm]||{};
+      if(n(r.out)<=0) list.push(nm);
+    });
+    return list;
+  }
+  function saveDay(){
+    var rec={date:$("dDate").value,hours:$("dHours").value,visitors:$("dVisitors").value,
+      members:$("dMembers").value,notes:$("dNotes").value,places:readGrid()};
+    if(!rec.date){ $("dDate").focus(); return; }
+    var noOut=placesWithNothingOut(rec.places);
+    if(noOut.length && !pendingConfirm){
+      $("noOutList").textContent="Nothing out for: "+noOut.join(", ");
+      $("noOutWarn").className="alert warn show";
+      $("saveBtn").textContent="Yes, save anyway";
+      pendingConfirm=true;
+      return;
+    }
+    pendingConfirm=false;
+    $("noOutWarn").className="alert warn";
+    $("saveBtn").textContent="Save day";
+    if(editingId){ state.days=state.days.map(function(d){return d.id===editingId?Object.assign({},d,rec):d;}); }
+    else { rec.id="d"+Date.now()+Math.floor(Math.random()*1000); state.days.push(rec); }
+    save(); closeModal(); renderStats(); renderTable(); renderBatch(); renderFollowers(); renderTopStatus();
+  }
+  function deleteDay(id){
+    state.days=state.days.filter(function(d){return d.id!==id;});
+    delete openRows[id];
+    save(); renderStats(); renderTable(); renderBatch(); renderFollowers(); renderTopStatus();
+  }
+
+  // ---- CSV ----
+  function buildCSV(){
+    var head=["Date","Focused hours","About page visitors (30-day)","Total members","Commitment met",
+      "Made total","Made by place","Went out total","Went out by place","Queue change","Followers by place (total reading)","Notes"];
+    function bd(d,a){var pl=d.places||{},p=[];Object.keys(pl).forEach(function(k){var v=n(pl[k][a]);if(v>0)p.push(k+":"+v);});return p.join(" | ");}
+    var rows=state.days.slice().sort(function(a,b){return (a.date||"")<(b.date||"")?-1:1;}).map(function(d){
+      return [d.date,n(d.hours),n(d.visitors),n(d.members),dayMet(d)?"Yes":"No",
+        dayActionTotal(d,"made"),bd(d,"made"),dayActionTotal(d,"out"),bd(d,"out"),
+        (dayActionTotal(d,"made")-dayActionTotal(d,"out")),
+        bd(d,"followers"),d.notes||""];
+    });
+    return [head].concat(rows).map(function(r){
+      return r.map(function(c){var s=String(c==null?"":c);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(",");
+    }).join("\n");
+  }
+  // A sandboxed frame (the artifact preview) silently swallows page-initiated
+  // downloads: the click does not throw, it simply never produces a file. So when
+  // we are framed, skip straight to the copy-and-paste fallback.
+  function isFramed(){ try{ return window.self!==window.top; }catch(e){ return true; } }
+  function showCSVFallback(csv){
+    var box=$("csvText");
+    box.value=csv;
+    $("csvCopy").textContent="Copy to clipboard";
+    $("csvBackdrop").className="backdrop show";
+    try{ box.focus(); box.setSelectionRange(0,box.value.length); }catch(e){}
+  }
+  function closeCSV(){ $("csvBackdrop").className="backdrop"; }
+  function exportCSV(){
+    var csv=buildCSV();
+    if(!isFramed()){
+      try{
+        var b=new Blob([csv],{type:"text/csv"}),u=URL.createObjectURL(b),a=document.createElement("a");
+        a.href=u;a.download="trafficmaxxing_log.csv";document.body.appendChild(a);a.click();document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(u);},1000);
+        return;
+      }catch(e){ /* fall through to the copy box */ }
+    }
+    showCSVFallback(csv);
+  }
+  function copyCSV(){
+    var box=$("csvText"), btn=$("csvCopy");
+    function done(ok){ btn.textContent = ok ? "Copied" : "Press Ctrl+C / Cmd+C"; }
+    try{ box.focus(); box.setSelectionRange(0,box.value.length); }catch(e){}
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(box.value).then(function(){ done(true); },function(){
+        try{ done(document.execCommand("copy")); }catch(e){ done(false); }
+      });
+    } else {
+      try{ done(document.execCommand("copy")); }catch(e){ done(false); }
+    }
+  }
+
+  // Values are refreshed on every call, listeners are attached once. Clearing all
+  // data calls this again, and without the guard each clear stacked another full
+  // set of listeners on the commitment inputs.
+  var commitBound=false;
+  function bindCommit(){
+    $("cName").value=state.commitment.name||""; $("cLevel").value=state.commitment.level||"";
+    $("cHours").value=state.commitment.hours||""; $("cMain").value=state.commitment.main||"";
+    $("cContent").value=state.commitment.content||""; $("cPieces").value=state.commitment.pieces||"";
+    if(commitBound) return;
+    commitBound=true;
+    $("cName").addEventListener("input",function(){state.commitment.name=this.value;save();});
+    $("cLevel").addEventListener("change",function(){
+      state.commitment.level=this.value;
+      if(HOURS_BY_LEVEL[this.value]!=null){state.commitment.hours=HOURS_BY_LEVEL[this.value];$("cHours").value=state.commitment.hours;}
+      save();renderPlan();
+    });
+    $("cHours").addEventListener("input",function(){state.commitment.hours=this.value;save();renderPlan();});
+    $("cMain").addEventListener("change",function(){
+      state.commitment.main=this.value;
+      if(state.commitment.repurposePlan) delete state.commitment.repurposePlan[this.value];
+      save();renderCommitPlan();renderPlan();renderStats();renderTable();
+    });
+    $("cContent").addEventListener("change",function(){
+      state.commitment.content=this.value;
+      if(PIECES_BY_CONTENT[this.value]!=null){state.commitment.pieces=PIECES_BY_CONTENT[this.value];$("cPieces").value=state.commitment.pieces;}
+      syncPlanCounts();
+      save();renderCommitPlan();renderPlan();renderStats();renderTable();updatePlanTotal();renderBatch();
+    });
+    $("cPieces").addEventListener("input",function(){
+      state.commitment.pieces=this.value;
+      syncPlanCounts(); save();
+      renderCommitPlan();renderPlan();renderStats();renderTable();updatePlanTotal();renderBatch();
+    });
+  }
+
+  function init(){
+    if(!canStore) $("saveNote").textContent="This preview cannot save between reloads. Once hosted, it saves on the device.";
+    bindCommit(); renderCommitPlan(); renderPlan(); renderStats(); renderTable(); renderBatch(); renderFollowers(); renderLock();
+    $("lockCommit").addEventListener("click",function(){
+      if(!commitReady()){ $("lockWarn").className="alert warn show"; return; }
+      $("lockWarn").className="alert warn";
+      state.commitment.locked=true; save(); renderLock();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+    $("editCommit").addEventListener("click",function(){
+      $("confirmEdit").className="confirmbar show";
+    });
+    $("confirmNo").addEventListener("click",function(){ $("confirmEdit").className="confirmbar"; });
+    $("confirmYes").addEventListener("click",function(){
+      $("confirmEdit").className="confirmbar";
+      state.commitment.locked=false; save(); renderLock();
+    });
+    $("toggleLog").addEventListener("click",function(){
+      var el=$("logCollapse"), open=el.className.indexOf("show")!==-1;
+      el.className="collapse"+(open?"":" show");
+      $("toggleLog").textContent=open?"Show log":"Hide log";
+    });
+    $("openLog").addEventListener("click",newDay);
+    $("closeModal").addEventListener("click",closeModal);
+    $("cancelBtn").addEventListener("click",closeModal);
+    $("saveBtn").addEventListener("click",saveDay);
+    $("backdrop").addEventListener("click",function(e){ if(e.target===$("backdrop")) closeModal(); });
+    $("csvBackdrop").addEventListener("click",function(e){ if(e.target===$("csvBackdrop")) closeCSV(); });
+    $("csvClose").addEventListener("click",closeCSV);
+    $("csvDone").addEventListener("click",closeCSV);
+    $("csvCopy").addEventListener("click",copyCSV);
+    document.addEventListener("keydown",function(e){
+      if(e.key!=="Escape") return;
+      if($("csvBackdrop").className.indexOf("show")!==-1){ closeCSV(); return; }
+      if($("backdrop").className.indexOf("show")!==-1) closeModal();
+    });
+    $("fillGoal").addEventListener("click",function(){
+      var cp=committedPlaces();
+      Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-place][data-act='made']"),function(inp){
+        var p=inp.getAttribute("data-place"); inp.value=cp.perDay[p]||"";
+      });
+      Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-place][data-act='out']"),function(inp){
+        var p=inp.getAttribute("data-place"); inp.value=cp.perDay[p]||"";
+      });
+      syncMainGoalCheck();
+      Array.prototype.forEach.call($("placeRows").querySelectorAll("input[data-check]"),function(cb){
+        cb.checked=true;
+        var nm=cb.getAttribute("data-check"), act=cb.getAttribute("data-act");
+        var q=Array.prototype.filter.call($("placeRows").querySelectorAll("input[data-qty]"),function(x){
+          return x.getAttribute("data-qty")===nm && x.getAttribute("data-act")===act; })[0];
+        if(q){ q.className="qty num-in show"; if(q.value==="") q.value=cp.perDay[nm]||1; }
+      });
+    });
+    $("clearAll").addEventListener("click",function(){
+      var wrap=$("placeRows");
+      Array.prototype.forEach.call(wrap.querySelectorAll("input[data-place]"),function(inp){inp.value="";});
+      Array.prototype.forEach.call(wrap.querySelectorAll("input[data-check]"),function(cb){cb.checked=false;});
+      Array.prototype.forEach.call(wrap.querySelectorAll("input[data-qty]"),function(q){q.className="qty num-in";q.value="";});
+      var gc=wrap.querySelector("#mainGoalCheck"); if(gc) gc.checked=false;
+      var sel=wrap.querySelector("#allGoalSelect"); if(sel) sel.value="manual";
+      var ask=wrap.querySelector("#extraAsk"); if(ask) ask.style.display="none";
+    });
+    $("exportBtn").addEventListener("click",exportCSV);
+    $("resetBtn").addEventListener("click",function(){
+      $("confirmClear").className="confirmbar danger-confirm show";
+    });
+    $("clearNo").addEventListener("click",function(){ $("confirmClear").className="confirmbar danger-confirm"; });
+    $("clearYes").addEventListener("click",function(){
+      $("confirmClear").className="confirmbar danger-confirm";
+      state={commitment:{repurposePlan:{},sourcePlan:{},manualCounts:{}},days:[]}; openRows={};
+      save(); bindCommit(); renderCommitPlan(); renderPlan(); renderStats(); renderTable(); renderBatch(); renderFollowers(); renderLock();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
